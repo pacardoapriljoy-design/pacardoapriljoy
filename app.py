@@ -1,7 +1,10 @@
 
 import sqlite3
 import requests
+<<<<<<< HEAD
 
+=======
+>>>>>>> f1b37d5 (Complete Laboratory Activity 8)
 from pathlib import Path
 from flask import Flask, jsonify, request, render_template
 from flask_cors import CORS
@@ -12,6 +15,7 @@ CORS(app)
 # DATABASE LOCATION
 DATABASE = Path(__file__).resolve().parent / "students.db"
 
+<<<<<<< HEAD
 # CLASSMATE API
 CLASSMATE_API_URL = "https://francineescultura-4.onrender.com/courses"
 
@@ -20,6 +24,10 @@ CLASSMATE_API_URL = "https://francineescultura-4.onrender.com/courses"
 # DATABASE CONNECTION
 # ===================================
 
+=======
+
+# CONNECT TO DATABASE
+>>>>>>> f1b37d5 (Complete Laboratory Activity 8)
 def get_db_connection():
 
     conn = sqlite3.connect(DATABASE)
@@ -146,7 +154,10 @@ def study_hours():
     hours = request.args.get('hours')
 
     if hours is None:
+<<<<<<< HEAD
 
+=======
+>>>>>>> f1b37d5 (Complete Laboratory Activity 8)
         return jsonify({
             "error": "Please provide your study hours."
         }), 400
@@ -154,9 +165,13 @@ def study_hours():
     try:
 
         hours = float(hours)
+<<<<<<< HEAD
 
     except (ValueError, TypeError):
 
+=======
+    except ValueError:
+>>>>>>> f1b37d5 (Complete Laboratory Activity 8)
         return jsonify({
             "error": "Invalid input. Please enter a number."
         }), 400
@@ -188,10 +203,14 @@ def study_hours():
     })
 
 
+<<<<<<< HEAD
 # ===================================
 # LAB 7 - DISPLAY ALL STUDENTS
 # ===================================
 
+=======
+# DISPLAY ALL STUDENTS - LAB 7
+>>>>>>> f1b37d5 (Complete Laboratory Activity 8)
 @app.route('/students')
 def get_students():
 
@@ -212,10 +231,14 @@ def get_students():
         conn.close()
 
 
+<<<<<<< HEAD
 # ===================================
 # LAB 7 - DISPLAY ONE STUDENT
 # ===================================
 
+=======
+# DISPLAY ONE STUDENT - LAB 7
+>>>>>>> f1b37d5 (Complete Laboratory Activity 8)
 @app.route('/students/<int:id>')
 def get_student_by_id(id):
 
@@ -241,10 +264,14 @@ def get_student_by_id(id):
         conn.close()
 
 
+<<<<<<< HEAD
 # ===================================
 # LAB 7 - FILTER BY SECTION
 # ===================================
 
+=======
+# FILTER STUDENTS BY SECTION - LAB 7
+>>>>>>> f1b37d5 (Complete Laboratory Activity 8)
 @app.route('/students/section/<section>')
 def get_students_by_section(section):
 
@@ -537,14 +564,19 @@ def delete_student(id):
 
 
 # ===================================
+<<<<<<< HEAD
 # LAB 8 - CLASSMATE API
 # FRANCINE ESCULTURA
 # COURSES - READ ONLY
+=======
+# CLASSMATE API - COURSES
+>>>>>>> f1b37d5 (Complete Laboratory Activity 8)
 # ===================================
 
 @app.route('/api/classmate-courses', methods=['GET'])
 def get_classmate_courses():
 
+<<<<<<< HEAD
     try:
 
         response = requests.get(
@@ -552,6 +584,13 @@ def get_classmate_courses():
             headers={
                 "Accept": "application/json"
             },
+=======
+    classmate_url = "https://palencia-shamainejoyce.onrender.com/courses"
+
+    try:
+        response = requests.get(
+            classmate_url,
+>>>>>>> f1b37d5 (Complete Laboratory Activity 8)
             timeout=60
         )
 
@@ -559,6 +598,7 @@ def get_classmate_courses():
 
         data = response.json()
 
+<<<<<<< HEAD
         # HANDLE COURSE JSON FORMATS
 
         if isinstance(data, list):
@@ -591,12 +631,23 @@ def get_classmate_courses():
 
     except requests.exceptions.HTTPError:
 
+=======
+        return jsonify(data)
+
+    except requests.exceptions.Timeout:
+        return jsonify({
+            "error": "Classmate API request timed out. Please try again."
+        }), 504
+
+    except requests.exceptions.HTTPError:
+>>>>>>> f1b37d5 (Complete Laboratory Activity 8)
         return jsonify({
             "error": "Classmate API returned an HTTP error.",
             "status_code": response.status_code
         }), 502
 
     except requests.exceptions.ConnectionError:
+<<<<<<< HEAD
 
         return jsonify({
             "error": "Cannot connect to Francine's API."
@@ -604,10 +655,18 @@ def get_classmate_courses():
 
     except ValueError:
 
+=======
+        return jsonify({
+            "error": "Cannot connect to classmate's API."
+        }), 502
+
+    except ValueError:
+>>>>>>> f1b37d5 (Complete Laboratory Activity 8)
         return jsonify({
             "error": "Invalid JSON response from classmate API."
         }), 502
 
+<<<<<<< HEAD
     except requests.exceptions.RequestException:
 
         return jsonify({
@@ -616,6 +675,14 @@ def get_classmate_courses():
 
 
 # ===================================
+=======
+    except requests.exceptions.RequestException as error:
+        return jsonify({
+            "error": str(error)
+        }), 502
+
+
+>>>>>>> f1b37d5 (Complete Laboratory Activity 8)
 # RUN FLASK APPLICATION
 # ===================================
 

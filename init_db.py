@@ -10,6 +10,7 @@ def init_db():
     conn = sqlite3.connect(DATABASE)
     cursor = conn.cursor()
 
+<<<<<<< HEAD
     # CREATE STUDENTS TABLE
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS students (
@@ -43,6 +44,27 @@ def init_db():
 
             VALUES (?, ?, ?, ?, ?)
 
+=======
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS students (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            student_id TEXT NOT NULL,
+            name TEXT NOT NULL,
+            program TEXT NOT NULL,
+            year INTEGER NOT NULL,
+            section TEXT NOT NULL
+        )
+    """)
+
+    cursor.execute("SELECT COUNT(*) FROM students")
+    count = cursor.fetchone()[0]
+
+    if count == 0:
+        cursor.execute("""
+            INSERT INTO students
+            (student_id, name, program, year, section)
+            VALUES (?, ?, ?, ?, ?)
+>>>>>>> f1b37d5 (Complete Laboratory Activity 8)
         """, (
             "2026-00001",
             "April Joy Pacardo",
@@ -58,5 +80,8 @@ def init_db():
 
 
 if __name__ == "__main__":
+<<<<<<< HEAD
 
+=======
+>>>>>>> f1b37d5 (Complete Laboratory Activity 8)
     init_db()
