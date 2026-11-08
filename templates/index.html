@@ -42,7 +42,7 @@
             border-radius: 4px;
         }
 
-        #result, #greeting {
+        #result, #greeting, #profileResult {
             margin-top: 15px;
             padding: 10px;
             background-color: white;
@@ -59,6 +59,7 @@
 
     <h1>Student API Interface</h1>
 
+    <!-- STUDENT INFORMATION API -->
     <button onclick="loadStudent()">
         Load Student Information
     </button>
@@ -67,15 +68,30 @@
 
     <hr>
 
+    <!-- GREETING API -->
     <h2>Greeting API</h2>
 
-    <input type="text" id="nameInput" placeholder="Enter your first name">
+    <input type="text" id="nameInput"
+           placeholder="Enter your first name">
 
     <button onclick="sayHello()">Say Hello</button>
 
     <p id="greeting"></p>
 
+    <hr>
+
+    <!-- CUSTOM STUDENT PROFILE API -->
+    <h2>My Student Profile API</h2>
+
+    <button onclick="loadMyProfile()">
+        View My Profile
+    </button>
+
+    <div id="profileResult"></div>
+
     <script>
+
+        // STUDENT INFORMATION API
         function loadStudent() {
             fetch('/student')
                 .then(response => response.json())
@@ -93,6 +109,7 @@
                 });
         }
 
+        // GREETING API
         function sayHello() {
             const name = document.getElementById('nameInput').value;
 
@@ -107,6 +124,33 @@
                         'Unable to retrieve greeting.';
                 });
         }
+
+        // CUSTOM API: MY STUDENT PROFILE
+        function loadMyProfile() {
+            fetch('/my-profile')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('API request failed');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    document.getElementById('profileResult').innerHTML =
+                        '<p><b>Student ID:</b> ' + data.student_id + '</p>' +
+                        '<p><b>Name:</b> ' + data.name + '</p>' +
+                        '<p><b>Program:</b> ' + data.program + '</p>' +
+                        '<p><b>Year:</b> ' + data.year + '</p>' +
+                        '<p><b>Section:</b> ' + data.section + '</p>' +
+                        '<p><b>Favorite Language:</b> ' + data.favorite_language + '</p>' +
+                        '<p><b>Hobby:</b> ' + data.hobby + '</p>' +
+                        '<p><b>Goal:</b> ' + data.goal + '</p>';
+                })
+                .catch(error => {
+                    document.getElementById('profileResult').innerText =
+                        'Unable to retrieve profile.';
+                });
+        }
+
     </script>
 
 </body>
