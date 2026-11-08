@@ -209,7 +209,6 @@
         </form>
     </div>
 
-
     <!-- MY RECORDS -->
     <div class="card">
 
@@ -233,7 +232,6 @@
 
     </div>
 
-
     <!-- CLASSMATE RECORDS -->
     <div class="card">
 
@@ -241,7 +239,8 @@
         <p class="section-label">Source: Classmate's Remote API (Read Only)</p>
 
         <input type="text" id="classmateAPI"
-            placeholder="Enter your classmate's API URL">
+            placeholder="Enter your classmate's API URL"
+            value="https://palencia-shamainejoyce.onrender.com/courses">
 
         <button class="load-btn" onclick="loadClassmateRecords()">
             Retrieve Classmate Records
@@ -260,7 +259,6 @@
     </div>
 
 </div>
-
 
 <script>
 
@@ -292,10 +290,9 @@
         } catch (error) {
 
             container.innerHTML =
-                `<p class="error">${error.message}</p>`;
+                `<p class="error">${escapeHTML(error.message)}</p>`;
 
         }
-
     }
 
 
@@ -311,8 +308,8 @@
             .value.toLowerCase();
 
         const filtered = students.filter(student =>
-            student.name.toLowerCase().includes(search) ||
-            student.student_id.toLowerCase().includes(search)
+            String(student.name).toLowerCase().includes(search) ||
+            String(student.student_id).toLowerCase().includes(search)
         );
 
         if (filtered.length === 0) {
@@ -331,7 +328,7 @@
                 <p><b>Student ID:</b> ${escapeHTML(student.student_id)}</p>
                 <p><b>Name:</b> ${escapeHTML(student.name)}</p>
                 <p><b>Program:</b> ${escapeHTML(student.program)}</p>
-                <p><b>Year:</b> ${student.year}</p>
+                <p><b>Year:</b> ${escapeHTML(student.year)}</p>
                 <p><b>Section:</b> ${escapeHTML(student.section)}</p>
 
                 <button class="view-btn"
@@ -352,12 +349,11 @@
             </div>
 
         `).join("");
-
     }
 
 
     // =================================
-    // CREATE STUDENT - POST
+    // CREATE AND UPDATE STUDENT
     // =================================
 
     document.getElementById("studentForm")
@@ -412,7 +408,6 @@
             );
 
         }
-
     });
 
 
@@ -435,7 +430,6 @@
             section: document.getElementById("section").value.trim()
 
         };
-
     }
 
 
@@ -465,10 +459,9 @@
 
         document.getElementById("cancelBtn").hidden = false;
 
-        document.querySelector(".card").scrollIntoView({
+        document.querySelector("#studentForm").scrollIntoView({
             behavior: "smooth"
         });
-
     }
 
 
@@ -498,7 +491,6 @@
             "add-btn";
 
         document.getElementById("cancelBtn").hidden = true;
-
     }
 
 
@@ -542,7 +534,6 @@
             showMessage("myMessage", error.message, "error");
 
         }
-
     }
 
 
@@ -577,12 +568,11 @@
             alert(error.message);
 
         }
-
     }
 
 
     // =================================
-    // LOAD CLASSMATE RECORDS
+    // LOAD CLASSMATE COURSES API
     // =================================
 
     async function loadClassmateRecords() {
@@ -591,7 +581,6 @@
             .value.trim();
 
         const container = document.getElementById("classmateRecords");
-
         const details = document.getElementById("remoteDetails");
 
         if (!apiURL) {
@@ -607,7 +596,19 @@
 
         try {
 
-            new URL(apiURL);
+            const parsedURL = new URL(apiURL);
+
+            if (
+                parsedURL.protocol !== "https:" &&
+                parsedURL.protocol !== "http:"
+            ) {
+                throw new Error("Please enter a valid HTTP or HTTPS URL.");
+            }
+
+            container.innerHTML =
+                '<p class="empty">Connecting to classmate API...</p>';
+
+            details.innerHTML = "";
 
             showMessage(
                 "remoteMessage",
@@ -615,87 +616,134 @@
                 "success"
             );
 
-            const response = await fetch(apiURL);
-
-            if (!response.ok) {
-                throw new Error("Unable to retrieve remote records.");
-            }
+            // REQUEST THROUGH FLASK BACKEND
+            const response = await fetch("/api/classmate-courses");
 
             const data = await response.json();
 
-            if (!Array.isArray(data)) {
-                throw new Error("The API did not return a student list.");
+            if (!response.ok) {
+                throw new Error(
+                    data.error || "Unable to retrieve classmate API."
+                );
             }
 
-            remoteStudents = data;
+            // HANDLE DIFFERENT JSON FORMATS
+            let records = [];
 
-            if (remoteStudents.length === 0) {
+            if (Array.isArray(data)) {
+
+                records = data;
+
+            } else if (Array.isArray(data.courses)) {
+
+                records = data.courses;
+
+            } else if (Array.isArray(data.data)) {
+
+                records = data.data;
+
+            } else if (Array.isArray(data.students)) {
+
+                records = data.students;
+
+            } else {
+
+                records = [data];
+
+            }
+
+            remoteStudents = records;
+
+            if (records.length === 0) {
 
                 container.innerHTML =
                     '<p class="empty">No classmate records found.</p>';
 
-                details.innerHTML = "";
-
             } else {
 
-                container.innerHTML = remoteStudents.map((student, index) => `
+                container.innerHTML = records.map((record, index) => {
 
-                    <div class="student-card">
+                    if (
+                        typeof record !== "object" ||
+                        record === null
+                    ) {
 
-                        <p><b>Student ID:</b>
-                        ${escapeHTML(student.student_id ?? "N/A")}</p>
+                        return `
+                            <div class="student-card">
+                                <p><b>Record ${index + 1}:</b>
+                                ${escapeHTML(record)}</p>
+                            </div>
+                        `;
+                    }
 
-                        <p><b>Name:</b>
-                        ${escapeHTML(student.name ?? "N/A")}</p>
+                    return `
+                        <div class="student-card">
 
-                        <p><b>Program:</b>
-                        ${escapeHTML(student.program ?? "N/A")}</p>
+                            <h3>Record ${index + 1}</h3>
 
-                        <button class="view-btn"
-                            onclick="viewRemoteStudent(${index})">
-                            View Details
-                        </button>
+                            ${Object.entries(record).map(([key, value]) => `
 
-                    </div>
+                                <p>
+                                    <b>${escapeHTML(key)}:</b>
+                                    ${escapeHTML(
+                                        typeof value === "object" && value !== null
+                                        ? JSON.stringify(value)
+                                        : value ?? "N/A"
+                                    )}
+                                </p>
 
-                `).join("");
+                            `).join("")}
 
-                details.innerHTML = "";
+                            <button class="view-btn"
+                                onclick="viewRemoteStudent(${index})">
+                                View Details
+                            </button>
+
+                            <p><b>Access:</b> Read Only</p>
+
+                        </div>
+                    `;
+
+                }).join("");
 
             }
 
             showMessage(
                 "remoteMessage",
-                "Classmate records retrieved successfully!",
+                "Classmate API retrieved successfully!",
                 "success"
             );
 
         } catch (error) {
 
             container.innerHTML =
-                '<p class="error">' + escapeHTML(error.message) + '</p>';
+                `<p class="error">${escapeHTML(error.message)}</p>`;
 
             showMessage(
                 "remoteMessage",
-                "Could not retrieve records. Check the API URL and CORS settings.",
+                "Unable to retrieve classmate API. Please check the server.",
                 "error"
             );
 
         }
-
     }
 
 
     // =================================
-    // VIEW REMOTE STUDENT DETAILS
-    // READ ONLY - NO EDIT OR DELETE
+    // VIEW REMOTE RECORD DETAILS
+    // READ ONLY
     // =================================
 
     function viewRemoteStudent(index) {
 
-        const student = remoteStudents[index];
+        const record = remoteStudents[index];
 
         const details = document.getElementById("remoteDetails");
+
+        if (!record || typeof record !== "object") {
+            details.innerHTML = "";
+            return;
+        }
 
         details.innerHTML = `
 
@@ -703,30 +751,24 @@
 
                 <h3>Selected Classmate Record</h3>
 
-                <p><b>Database ID:</b>
-                ${escapeHTML(student.id ?? "N/A")}</p>
+                ${Object.entries(record).map(([key, value]) => `
 
-                <p><b>Student ID:</b>
-                ${escapeHTML(student.student_id ?? "N/A")}</p>
+                    <p>
+                        <b>${escapeHTML(key)}:</b>
+                        ${escapeHTML(
+                            typeof value === "object" && value !== null
+                            ? JSON.stringify(value)
+                            : value ?? "N/A"
+                        )}
+                    </p>
 
-                <p><b>Name:</b>
-                ${escapeHTML(student.name ?? "N/A")}</p>
-
-                <p><b>Program:</b>
-                ${escapeHTML(student.program ?? "N/A")}</p>
-
-                <p><b>Year:</b>
-                ${escapeHTML(student.year ?? "N/A")}</p>
-
-                <p><b>Section:</b>
-                ${escapeHTML(student.section ?? "N/A")}</p>
+                `).join("")}
 
                 <p><b>Access:</b> Read Only</p>
 
             </div>
 
         `;
-
     }
 
 
@@ -741,11 +783,13 @@
         element.textContent = message;
 
         element.className = "message " + type;
-
     }
 
 
-    // ESCAPE TEXT FROM DATABASE/API
+    // =================================
+    // ESCAPE HTML
+    // =================================
+
     function escapeHTML(value) {
 
         return String(value).replace(/[&<>"']/g, char => ({
@@ -759,7 +803,10 @@
     }
 
 
+    // =================================
     // LOAD RECORDS WHEN PAGE OPENS
+    // =================================
+
     loadMyRecords();
 
 </script>
