@@ -2,13 +2,12 @@
 import sqlite3
 from pathlib import Path
 from flask import Flask, jsonify, request, render_template
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)
 
-# DATABASE LOCATION
-BASE_DIR = Path(__file__).resolve().parent
-DATABASE = BASE_DIR / 'students.db'
-
+DATABASE = Path(__file__).resolve().parent / "students.db"
 
 # CONNECT TO DATABASE
 def get_db_connection():
