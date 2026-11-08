@@ -1,43 +1,47 @@
+
 import sqlite3
+from pathlib import Path
 
-# CONNECT TO DATABASE
-conn = sqlite3.connect('students.db')
-cursor = conn.cursor()
+DATABASE = Path(__file__).resolve().parent / "students.db"
 
-# CREATE STUDENTS TABLE
-cursor.execute('''
-CREATE TABLE IF NOT EXISTS students (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    student_id TEXT NOT NULL,
-    name TEXT NOT NULL,
-    program TEXT NOT NULL,
-    year INTEGER NOT NULL,
-    section TEXT NOT NULL
-)
-''')
 
-# CLEAR EXISTING RECORDS
-cursor.execute("DELETE FROM students")
+def init_db():
 
-# FIVE SAMPLE STUDENT RECORDS
-students = [
-    ('2026-00001', 'April Joy Pacardo', 'BSIT', 3, 'Dijkstra'),
-    ('2026-00002', 'Francine Escultura', 'BSIT', 3, 'Dijkstra'),
-    ('2026-00003', 'Jero Paca-oncis', 'BSIT', 2, 'A'),
-    ('2026-00004', 'Missy Miranda', 'BSCS', 1, 'B'),
-    ('2026-00005', 'Sharmaine Joyce Palencia', 'BSIT', 1, 'A')
-]
+    conn = sqlite3.connect(DATABASE)
+    cursor = conn.cursor()
 
-# INSERT STUDENT RECORDS
-cursor.executemany('''
-INSERT INTO students
-(student_id, name, program, year, section)
-VALUES (?, ?, ?, ?, ?)
-''', students)
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS students (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            student_id TEXT NOT NULL,
+            name TEXT NOT NULL,
+            program TEXT NOT NULL,
+            year INTEGER NOT NULL,
+            section TEXT NOT NULL
+        )
+    """)
 
-# SAVE CHANGES
-conn.commit()
-conn.close()
+    cursor.execute("SELECT COUNT(*) FROM students")
+    count = cursor.fetchone()[0]
 
-print("Database created successfully.")
-print("Five student records inserted successfully.")
+    if count == 0:
+        cursor.execute("""
+            INSERT INTO students
+            (student_id, name, program, year, section)
+            VALUES (?, ?, ?, ?, ?)
+        """, (
+            "2026-00001",
+            "April Joy Pacardo",
+            "BSIT",
+            3,
+            "Dijkstra"
+        ))
+
+    conn.commit()
+    conn.close()
+
+    print("Database initialized successfully!")
+
+
+if __name__ == "__main__":
+    init_db()
