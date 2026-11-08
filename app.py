@@ -27,5 +27,19 @@ def say_hello():
     })
 
 
+# CUSTOM API: MY STUDENT PROFILE
+@app.route('/my-profile')
+def my_profile():
+    return jsonify({
+        "student_id": "24-00065",
+        "name": "April Joy Pacardo",
+        "program": "BSIT",
+        "year": 3,
+        "section": "DIJKSTRA",
+        "favorite_language": "Python",
+        "hobby": "Learning programming",
+        "goal": "Become a successful IT professional"
+    })
+
 if __name__ == '__main__':
     app.run(debug=True)
