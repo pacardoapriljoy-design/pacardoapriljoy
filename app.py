@@ -1,5 +1,5 @@
-
 import sqlite3
+import requests
 from pathlib import Path
 from flask import Flask, jsonify, request, render_template
 from flask_cors import CORS
@@ -8,6 +8,7 @@ app = Flask(__name__)
 CORS(app)
 
 DATABASE = Path(__file__).resolve().parent / "students.db"
+
 
 # CONNECT TO DATABASE
 def get_db_connection():
@@ -63,12 +64,16 @@ def study_hours():
     hours = request.args.get('hours')
 
     if hours is None:
-        return jsonify({"error": "Please provide your study hours."}), 400
+        return jsonify({
+            "error": "Please provide your study hours."
+        }), 400
 
     try:
         hours = float(hours)
     except ValueError:
-        return jsonify({"error": "Invalid input. Please enter a number."}), 400
+        return jsonify({
+            "error": "Invalid input. Please enter a number."
+        }), 400
 
     if hours < 0 or hours > 24:
         return jsonify({
@@ -89,7 +94,7 @@ def study_hours():
     })
 
 
-# DISPLAY ALL STUDENTS (LAB 7)
+# DISPLAY ALL STUDENTS - LAB 7
 @app.route('/students')
 def get_students():
     conn = get_db_connection()
@@ -103,7 +108,7 @@ def get_students():
     return jsonify([dict(student) for student in students])
 
 
-# DISPLAY ONE STUDENT (LAB 7)
+# DISPLAY ONE STUDENT - LAB 7
 @app.route('/students/<int:id>')
 def get_student_by_id(id):
     conn = get_db_connection()
@@ -121,7 +126,7 @@ def get_student_by_id(id):
     return jsonify(dict(student))
 
 
-# FILTER STUDENTS BY SECTION (LAB 7)
+# FILTER STUDENTS BY SECTION - LAB 7
 @app.route('/students/section/<section>')
 def get_students_by_section(section):
     conn = get_db_connection()
@@ -303,6 +308,54 @@ def delete_student(id):
     return jsonify({
         "message": "Student deleted successfully"
     })
+
+
+# ===================================
+# CLASSMATE API - COURSES
+# ===================================
+
+@app.route('/api/classmate-courses', methods=['GET'])
+def get_classmate_courses():
+
+    classmate_url = "https://palencia-shamainejoyce.onrender.com/courses"
+
+    try:
+        response = requests.get(
+            classmate_url,
+            timeout=60
+        )
+
+        response.raise_for_status()
+
+        data = response.json()
+
+        return jsonify(data)
+
+    except requests.exceptions.Timeout:
+        return jsonify({
+            "error": "Classmate API request timed out. Please try again."
+        }), 504
+
+    except requests.exceptions.HTTPError:
+        return jsonify({
+            "error": "Classmate API returned an HTTP error.",
+            "status_code": response.status_code
+        }), 502
+
+    except requests.exceptions.ConnectionError:
+        return jsonify({
+            "error": "Cannot connect to classmate's API."
+        }), 502
+
+    except ValueError:
+        return jsonify({
+            "error": "Invalid JSON response from classmate API."
+        }), 502
+
+    except requests.exceptions.RequestException as error:
+        return jsonify({
+            "error": str(error)
+        }), 502
 
 
 # RUN FLASK APPLICATION
