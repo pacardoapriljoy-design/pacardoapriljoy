@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>April Joy Pacardo API Interface</title>
+    <title>April Joy Pacardo - Student API</title>
 
     <style>
         * {
@@ -14,7 +14,7 @@
 
         body {
             font-family: Arial, sans-serif;
-            max-width: 800px;
+            max-width: 850px;
             margin: 35px auto;
             padding: 20px;
             background: #f8eafa;
@@ -28,10 +28,6 @@
             padding: 25px 15px;
             border-radius: 12px;
             margin-bottom: 25px;
-        }
-
-        header h1 {
-            margin-top: 0;
         }
 
         .card {
@@ -54,7 +50,7 @@
             border: none;
             border-radius: 6px;
             padding: 10px 16px;
-            margin-top: 10px;
+            margin: 5px 3px;
             cursor: pointer;
         }
 
@@ -80,8 +76,16 @@
             overflow-wrap: anywhere;
         }
 
-        .result p {
-            margin: 10px 0;
+        .student-record {
+            background: white;
+            padding: 12px;
+            border-left: 4px solid #a855b5;
+            border-radius: 5px;
+            margin: 12px 0;
+        }
+
+        .student-record p {
+            margin: 7px 0;
         }
 
         footer {
@@ -90,6 +94,12 @@
             font-size: 13px;
             padding: 15px;
         }
+
+        hr {
+            border: none;
+            border-top: 1px solid #e4b8eb;
+            margin: 20px 0;
+        }
     </style>
 </head>
 
@@ -97,8 +107,9 @@
 
 <header>
     <h1>Student API Interface</h1>
-    <p>Laboratory Activity 6: Flask API Integration</p>
+    <p>Laboratory Activities 7</p>
     <p>Welcome, April Joy Pacardo!</p>
+    <p>BSIT 3B DIJKSTRA</p>
 </header>
 
 
@@ -107,7 +118,7 @@
 
     <h2>Student Information</h2>
 
-    <p>Click the button to load your student information.</p>
+    <p>Retrieve student information from Flask API.</p>
 
     <button onclick="loadStudent()">
         Load Student Information
@@ -150,7 +161,7 @@
 
     <h2>My Hobbies</h2>
 
-    <p>Click below to retrieve your hobbies from the API.</p>
+    <p>Retrieve your hobbies from the API.</p>
 
     <button onclick="loadHobbies()">Load My Hobbies</button>
 
@@ -193,8 +204,81 @@
 </section>
 
 
+<!-- 5. ALL STUDENTS FROM DATABASE -->
+<section class="card">
+
+    <h2>Students from SQLite Database</h2>
+
+    <p>Click the button to retrieve all student records from students.db.</p>
+
+    <button onclick="loadStudents()">
+        Load Students
+    </button>
+
+    <div id="studentList" class="result">
+        Database records will appear here.
+    </div>
+
+</section>
+
+
+<!-- 6. SEARCH STUDENT BY DATABASE ID -->
+<section class="card">
+
+    <h2>Search Student by ID</h2>
+
+    <label for="studentIdInput">Enter Database ID:</label>
+    <br>
+
+    <input
+        type="number"
+        id="studentIdInput"
+        min="1"
+        placeholder="Example: 1"
+    >
+
+    <br>
+
+    <button onclick="loadStudentById()">
+        Search Student
+    </button>
+
+    <div id="singleStudentResult" class="result">
+        Selected student will appear here.
+    </div>
+
+</section>
+
+
+<!-- 7. ADDITIONAL TASK: FILTER BY SECTION -->
+<section class="card">
+
+    <h2>Search Students by Section</h2>
+
+    <label for="sectionInput">Enter Section:</label>
+    <br>
+
+    <input
+        type="text"
+        id="sectionInput"
+        placeholder="Example: A"
+    >
+
+    <br>
+
+    <button onclick="loadStudentsBySection()">
+        Search Section
+    </button>
+
+    <div id="sectionResult" class="result">
+        Students by section will appear here.
+    </div>
+
+</section>
+
+
 <footer>
-    Flask API Project | BSIT 3B DIJKSTRA
+    Flask API and SQLite Database Project | BSIT 3B DIJKSTRA
 </footer>
 
 
@@ -210,15 +294,13 @@ function loadStudent() {
     fetch("/student")
         .then(response => {
             if (!response.ok) {
-                throw new Error("Failed to load student information");
+                throw new Error("Request failed");
             }
-
             return response.json();
         })
-
         .then(data => {
 
-            result.replaceChildren();
+            result.innerHTML = "";
 
             const fields = [
                 ["Student ID", data.student_id],
@@ -229,30 +311,18 @@ function loadStudent() {
             ];
 
             fields.forEach(([label, value]) => {
-
                 const p = document.createElement("p");
-
                 const strong = document.createElement("strong");
 
                 strong.textContent = label + ": ";
-
                 p.appendChild(strong);
-
-                p.appendChild(
-                    document.createTextNode(
-                        String(value ?? "Not available")
-                    )
-                );
+                p.appendChild(document.createTextNode(value ?? "Not available"));
 
                 result.appendChild(p);
-
             });
-
         })
-
         .catch(() => {
-            result.textContent =
-                "Unable to retrieve student information.";
+            result.textContent = "Unable to retrieve student information.";
         });
 }
 
@@ -261,7 +331,6 @@ function loadStudent() {
 function sayHello() {
 
     const name = document.getElementById("nameInput").value.trim();
-
     const result = document.getElementById("greetingResult");
 
     if (!name) {
@@ -272,19 +341,15 @@ function sayHello() {
     result.textContent = "Loading greeting...";
 
     fetch("/hello?name=" + encodeURIComponent(name))
-
         .then(response => {
             if (!response.ok) {
-                throw new Error("Greeting request failed");
+                throw new Error("Request failed");
             }
-
             return response.json();
         })
-
         .then(data => {
             result.textContent = data.message;
         })
-
         .catch(() => {
             result.textContent = "Unable to retrieve greeting.";
         });
@@ -299,55 +364,38 @@ function loadHobbies() {
     result.textContent = "Loading hobbies...";
 
     fetch("/hobbies")
-
         .then(response => {
             if (!response.ok) {
-                throw new Error("Hobbies request failed");
+                throw new Error("Request failed");
             }
-
             return response.json();
         })
-
         .then(data => {
 
-            result.replaceChildren();
+            result.innerHTML = "";
 
             const student = document.createElement("p");
-
             student.textContent = "Student: " + data.student;
-
             result.appendChild(student);
 
             const heading = document.createElement("h3");
-
             heading.textContent = "My Hobbies:";
-
             result.appendChild(heading);
 
             const list = document.createElement("ul");
 
-            (data.hobbies || []).forEach(hobby => {
-
+            data.hobbies.forEach(hobby => {
                 const item = document.createElement("li");
-
                 item.textContent = hobby;
-
                 list.appendChild(item);
-
             });
 
             result.appendChild(list);
 
             const total = document.createElement("p");
-
-            total.textContent =
-                "Total Hobbies: " +
-                (data.total_hobbies ?? (data.hobbies || []).length);
-
+            total.textContent = "Total Hobbies: " + data.total_hobbies;
             result.appendChild(total);
-
         })
-
         .catch(() => {
             result.textContent = "Unable to retrieve hobbies.";
         });
@@ -357,11 +405,8 @@ function loadHobbies() {
 // 4. STUDY HOURS API
 function checkStudyHours() {
 
-    const input = document.getElementById("hoursInput");
-
+    const hours = document.getElementById("hoursInput").value.trim();
     const result = document.getElementById("studyResult");
-
-    const hours = input.value.trim();
 
     if (hours === "") {
         result.textContent = "Please enter your study hours.";
@@ -374,18 +419,14 @@ function checkStudyHours() {
         numberOfHours < 0 ||
         numberOfHours > 24) {
 
-        result.textContent =
-            "Please enter a number between 0 and 24.";
-
+        result.textContent = "Enter a number between 0 and 24.";
         return;
     }
 
-    result.textContent = "Checking your study hours...";
+    result.textContent = "Checking study hours...";
 
     fetch("/studyhours?hours=" + encodeURIComponent(hours))
-
         .then(async response => {
-
             const data = await response.json();
 
             if (!response.ok) {
@@ -394,10 +435,9 @@ function checkStudyHours() {
 
             return data;
         })
-
         .then(data => {
 
-            result.replaceChildren();
+            result.innerHTML = "";
 
             const details = [
                 ["Student", data.student],
@@ -406,28 +446,145 @@ function checkStudyHours() {
             ];
 
             details.forEach(([label, value]) => {
-
                 const p = document.createElement("p");
-
                 const strong = document.createElement("strong");
 
                 strong.textContent = label + ": ";
-
                 p.appendChild(strong);
-
-                p.appendChild(
-                    document.createTextNode(String(value))
-                );
+                p.appendChild(document.createTextNode(String(value)));
 
                 result.appendChild(p);
-
             });
-
         })
-
         .catch(error => {
-            result.textContent =
-                error.message || "Unable to check study hours.";
+            result.textContent = error.message;
+        });
+}
+
+
+// DISPLAY STUDENT RECORDS
+function displayStudents(data, result) {
+
+    result.innerHTML = "";
+
+    if (!Array.isArray(data) || data.length === 0) {
+        result.textContent = "No student records found.";
+        return;
+    }
+
+    data.forEach(student => {
+
+        const card = document.createElement("div");
+        card.className = "student-record";
+
+        const fields = [
+            ["Database ID", student.id],
+            ["Student ID", student.student_id],
+            ["Name", student.name],
+            ["Program", student.program],
+            ["Year", student.year],
+            ["Section", student.section]
+        ];
+
+        fields.forEach(([label, value]) => {
+
+            const p = document.createElement("p");
+            const strong = document.createElement("strong");
+
+            strong.textContent = label + ": ";
+
+            p.appendChild(strong);
+            p.appendChild(
+                document.createTextNode(String(value ?? ""))
+            );
+
+            card.appendChild(p);
+        });
+
+        result.appendChild(card);
+    });
+}
+
+
+// 5. LOAD ALL STUDENTS FROM DATABASE
+function loadStudents() {
+
+    const result = document.getElementById("studentList");
+
+    result.textContent = "Loading database records...";
+
+    fetch("/students")
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("Failed to retrieve database records.");
+            }
+            return response.json();
+        })
+        .then(data => {
+            displayStudents(data, result);
+        })
+        .catch(error => {
+            result.textContent = error.message;
+        });
+}
+
+
+// 6. SEARCH ONE STUDENT BY ID
+function loadStudentById() {
+
+    const id = document.getElementById("studentIdInput").value.trim();
+
+    const result = document.getElementById("singleStudentResult");
+
+    if (!id || Number(id) < 1) {
+        result.textContent = "Please enter a valid database ID.";
+        return;
+    }
+
+    result.textContent = "Searching student...";
+
+    fetch("/students/" + encodeURIComponent(id))
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("Student not found.");
+            }
+            return response.json();
+        })
+        .then(data => {
+            displayStudents([data], result);
+        })
+        .catch(error => {
+            result.textContent = error.message;
+        });
+}
+
+
+// 7. ADDITIONAL TASK: SEARCH BY SECTION
+function loadStudentsBySection() {
+
+    const section = document.getElementById("sectionInput").value.trim();
+
+    const result = document.getElementById("sectionResult");
+
+    if (!section) {
+        result.textContent = "Please enter a section.";
+        return;
+    }
+
+    result.textContent = "Searching section...";
+
+    fetch("/students/section/" + encodeURIComponent(section))
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("Unable to retrieve students.");
+            }
+            return response.json();
+        })
+        .then(data => {
+            displayStudents(data, result);
+        })
+        .catch(error => {
+            result.textContent = error.message;
         });
 }
 
