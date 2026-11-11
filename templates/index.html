@@ -1,14 +1,10 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<<<<<<< HEAD
-
-    <title>Student CRUD Management System</title>
-=======
     <title>Student CRUD Management System - Lab 8</title>
->>>>>>> ed01109 (Update Lab 8)
 
     <style>
         * {
@@ -17,9 +13,9 @@
 
         body {
             font-family: Arial, sans-serif;
-            background: #b986b9;
+            background: #f4eaf7;
             margin: 0;
-            padding: 25px;
+            padding: 20px;
             color: #333;
         }
 
@@ -28,137 +24,68 @@
             margin: auto;
         }
 
-        h1 {
-            text-align: center;
-            color: #283593;
-        }
-
-        h2 {
-            color: #283593;
-            margin-top: 30px;
-        }
-
-        header p {
-            margin-top: 6px;
-        }
-
         .card {
             background: white;
-            padding: 22px;
-            margin: 20px 0;
-            border-radius: 10px;
-            box-shadow: 0 3px 10px #00000012;
+            padding: 25px;
+            margin-bottom: 22px;
+            border-radius: 12px;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+        }
+
+        h1, h2 {
+            color: #80569b;
+        }
+
+        h1 {
+            text-align: center;
         }
 
         .form-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
+            gap: 15px;
         }
 
-        input {
+        input, select {
             width: 100%;
             padding: 12px;
-<<<<<<< HEAD
-            border: 1px solid #d5c2e2;
+            border: 1px solid #d5c0e3;
             border-radius: 7px;
-            font-size: 14px;
-            background: white;
-        }
-
-        input:focus, select:focus {
-            outline: none;
-            border-color: #a77bc5;
-            box-shadow: 0 0 0 3px rgba(167,123,197,0.15);
-=======
-            border: 1px solid #ccc;
-            border-radius: 6px;
->>>>>>> ed01109 (Update Lab 8)
+            margin-bottom: 10px;
         }
 
         button {
-            padding: 10px 15px;
+            padding: 10px 16px;
             border: none;
-            border-radius: 5px;
+            border-radius: 7px;
+            background: #80569b;
+            color: white;
             cursor: pointer;
-<<<<<<< HEAD
-            margin: 5px 3px;
-            font-weight: bold;
-            transition: 0.2s;
-        }
-
-        button:hover {
-            opacity: 0.85;
-            transform: translateY(-1px);
-        }
-
-        button:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .add-btn, .load-btn {
-            background: #76528f;
-            color: white;
-=======
-            color: white;
             margin: 3px;
         }
 
-        .add-btn {
-            background: #283593;
->>>>>>> ed01109 (Update Lab 8)
+        button:hover {
+            background: #67417f;
         }
 
-        .edit-btn {
-            background: #f9a825;
-            color: #222;
+        .delete {
+            background: #dc5252;
         }
 
-        .delete-btn {
-            background: #d32f2f;
+        .edit {
+            background: #3979b8;
         }
 
-<<<<<<< HEAD
-        .view-btn {
-            background: #6b8db5;
-            color: white;
-=======
-        .details-btn {
-            background: #00897b;
->>>>>>> ed01109 (Update Lab 8)
+        .view {
+            background: #399b79;
         }
 
-        .cancel-btn {
-            background: #757575;
-        }
-
-<<<<<<< HEAD
-        .student-card {
-            background: #fcf9ff;
-            border-left: 5px solid #a77bc5;
-            padding: 17px;
-            border-radius: 8px;
-            margin-bottom: 12px;
-            overflow-wrap: anywhere;
-        }
-
-        .student-card h3 {
-            margin-bottom: 8px;
-            color: #76528f;
-        }
-
-        .student-card p {
-            margin: 7px 0;
-            line-height: 1.4;
+        .cancel {
+            background: #777;
         }
 
         .search-box {
-=======
-        .search {
->>>>>>> ed01109 (Update Lab 8)
-            margin-bottom: 15px;
+            margin: 15px 0;
         }
 
         .table-wrapper {
@@ -168,78 +95,52 @@
         table {
             width: 100%;
             border-collapse: collapse;
-            min-width: 650px;
+            min-width: 750px;
         }
 
         th, td {
-            padding: 12px;
             border: 1px solid #ddd;
+            padding: 12px;
             text-align: left;
         }
 
         th {
-            background: #283593;
+            background: #80569b;
             color: white;
         }
 
         tr:nth-child(even) {
-            background: #f5f5f5;
+            background: #faf6fc;
         }
 
         .message {
-            margin-top: 12px;
+            margin: 12px 0;
             font-weight: bold;
         }
 
+        .success {
+            color: green;
+        }
+
+        .error {
+            color: red;
+        }
+
         .remote-section {
-            border-left: 5px solid #00897b;
-        }
-
-        .source {
-            color: #666;
-            font-size: 13px;
-            overflow-wrap: anywhere;
-        }
-
-        .remote-url {
-            margin-bottom: 10px;
-        }
-
-        .remote-details {
-            margin-top: 15px;
-        }
-
-        .form-actions {
-            margin-top: 10px;
-        }
-
-        .hidden {
-            display: none;
+            margin-top: 20px;
         }
 
         @media(max-width: 650px) {
-            body {
-                padding: 10px;
-            }
-
             .form-grid {
                 grid-template-columns: 1fr;
             }
 
-            header {
-                padding: 22px 15px;
-            }
-
-            header h1 {
-                font-size: 23px;
+            body {
+                padding: 10px;
             }
 
             .card {
-                padding: 18px;
-            }
-
-            button {
-                margin: 5px 2px;
+                padding: 15px;
             }
         }
     </style>
@@ -249,266 +150,83 @@
 
 <div class="container">
 
-<<<<<<< HEAD
-    <!-- HEADER -->
-
-    <header>
-        <h1>Student CRUD Management System</h1>
-
-        <p>
-            Laboratory Activity 8 - SQLite Database and API Integration
-        </p>
-
-        <p>
-            April Joy Pacardo | BSIT 3B Dijkstra
-        </p>
-    </header>
-=======
     <h1>Student CRUD Management System</h1>
-    <p style="text-align:center;">
-        Laboratory Activity 8 - CRUD Web Application and Classmate API
-    </p>
->>>>>>> ed01109 (Update Lab 8)
 
-
-    <!-- ================================= -->
-    <!-- STUDENT INFORMATION FORM -->
-    <!-- ================================= -->
-
+    <!-- STUDENT FORM -->
     <div class="card">
 
-<<<<<<< HEAD
-        <h2>Student Information Form</h2>
-=======
-        <h2 id="formTitle">Add New Student</h2>
->>>>>>> ed01109 (Update Lab 8)
+        <h2 id="formTitle">Add Student Record</h2>
 
         <form id="studentForm">
 
+            <input type="hidden" id="recordId">
+
             <div class="form-grid">
 
-<<<<<<< HEAD
-                <input
-                    type="text"
-                    id="student_id"
-                    placeholder="Student ID"
-                    maxlength="50"
-                    required
-                >
+                <div>
+                    <label>Student ID</label>
+                    <input type="text" id="student_id"
+                           placeholder="Enter Student ID" required>
+                </div>
 
-                <input
-                    type="text"
-                    id="name"
-                    placeholder="Full Name"
-                    maxlength="150"
-                    required
-                >
+                <div>
+                    <label>Full Name</label>
+                    <input type="text" id="name"
+                           placeholder="Enter Full Name" required>
+                </div>
 
-                <input
-                    type="text"
-                    id="program"
-                    placeholder="Program (BSIT, BSCS)"
-                    maxlength="50"
-                    required
-                >
+                <div>
+                    <label>Program</label>
+                    <input type="text" id="program"
+                           placeholder="Enter Program" required>
+                </div>
 
-                <input
-                    type="number"
-                    id="year"
-                    placeholder="Year Level"
-                    min="1"
-                    max="5"
-                    required
-                >
+                <div>
+                    <label>Year</label>
+                    <input type="number" id="year"
+                           min="1" max="5"
+                           placeholder="Enter Year" required>
+                </div>
 
-                <input
-                    type="text"
-                    id="section"
-                    placeholder="Section (Dijkstra, A, B)"
-                    maxlength="50"
-                    required
-                >
-=======
-                <input type="text" id="student_id"
-                       placeholder="Student ID" required>
-
-                <input type="text" id="name"
-                       placeholder="Full Name" required>
-
-                <input type="text" id="program"
-                       placeholder="Program (BSIT)" required>
-
-                <input type="number" id="year"
-                       placeholder="Year" min="1" required>
-
-                <input type="text" id="section"
-                       placeholder="Section" required>
->>>>>>> ed01109 (Update Lab 8)
+                <div>
+                    <label>Section</label>
+                    <input type="text" id="section"
+                           placeholder="Enter Section" required>
+                </div>
 
             </div>
 
-            <br>
+            <button type="submit" id="submitButton">
+                Add Student
+            </button>
 
-            <div class="form-actions">
-
-<<<<<<< HEAD
-                <button
-                    type="submit"
-                    class="add-btn"
-                    id="submitBtn"
-                >
-                    Add Student
-                </button>
-
-                <button
-                    type="button"
-                    class="cancel-btn hidden"
-                    id="cancelBtn"
-                >
-                    Cancel Edit
-                </button>
-
-            </div>
-
-        </form>
-
-=======
-            <button type="button" class="cancel-btn"
-                    id="cancelBtn" style="display:none;"
+            <button type="button" class="cancel"
+                    id="cancelButton" hidden
                     onclick="resetForm()">
                 Cancel Edit
             </button>
 
+            <div id="formMessage" class="message"></div>
+
         </form>
 
-        <div id="message" class="message"></div>
-
->>>>>>> ed01109 (Update Lab 8)
     </div>
 
 
-    <!-- ================================= -->
-    <!-- MY RECORDS -->
-    <!-- ================================= -->
-
+    <!-- MY STUDENT RECORDS -->
     <div class="card">
 
-        <h2>My Records</h2>
-<<<<<<< HEAD
-
-        <p class="section-label">
-            Source: My SQLite Database
-        </p>
-
-        <input
-            type="text"
-            id="searchInput"
-            class="search-box"
-            placeholder="Search student by name or ID..."
-        >
-
-        <button
-            class="load-btn"
-            id="refreshBtn"
-        >
-            Refresh My Records
-        </button>
-=======
-
-        <p class="source">
-            Source: Your own Flask and SQLite database.
-        </p>
+        <h2>My Student Records</h2>
 
         <input type="text" id="searchInput"
-               class="search"
-               placeholder="Search Student ID, Name, Program, Year or Section...">
+               class="search-box"
+               placeholder="Search student ID, name, program, or section...">
 
-        <div class="table-wrapper">
->>>>>>> ed01109 (Update Lab 8)
-
-            <table>
-
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Student ID</th>
-                        <th>Name</th>
-                        <th>Program</th>
-                        <th>Year</th>
-                        <th>Section</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-
-                <tbody id="studentTable">
-                    <tr>
-                        <td colspan="7">Loading records...</td>
-                    </tr>
-                </tbody>
-
-            </table>
-
-<<<<<<< HEAD
-        <div id="myRecords">
-
-            <p class="empty">
-                Loading student records...
-            </p>
-
-=======
->>>>>>> ed01109 (Update Lab 8)
-        </div>
-
-    </div>
-
-
-    <!-- ================================= -->
-    <!-- CLASSMATE RECORDS -->
-<<<<<<< HEAD
-    <!-- ================================= -->
-
-    <div class="card">
-
-        <h2>Classmate's Records</h2>
-
-        <p class="section-label">
-            Source: Classmate's Remote API (Read Only)
-        </p>
-
-        <input
-            type="text"
-            id="classmateAPI"
-            class="remote-url"
-            value="https://francineescultura-4.onrender.com"
-            readonly
-        >
-
-        <button
-            class="load-btn"
-            id="retrieveBtn"
-        >
-=======
-    <div class="card remote-section">
-
-        <h2>Classmate's Records</h2>
-
-        <p class="source">
-            Source: Another student's deployed Render API.
-            Remote records are READ-ONLY.
-        </p>
-
-        <input type="url" id="classmateURL"
-               placeholder="Enter classmate API URL">
-
-        <button type="button" class="add-btn"
-                onclick="loadClassmateRecords()">
->>>>>>> ed01109 (Update Lab 8)
-            Retrieve Classmate Records
+        <button onclick="loadStudents()">
+            Refresh Records
         </button>
 
-        <div id="remoteMessage" class="message"></div>
-
-        <br>
+        <div id="localMessage" class="message"></div>
 
         <div class="table-wrapper">
 
@@ -526,31 +244,64 @@
                     </tr>
                 </thead>
 
+                <tbody id="studentTable">
+                    <tr>
+                        <td colspan="7">Loading records...</td>
+                    </tr>
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+
+    <!-- CLASSMATE RECORDS -->
+    <div class="card remote-section">
+
+        <h2>Classmate's Records</h2>
+
+        <p>
+            Source: Classmate's Remote API (Read Only)
+        </p>
+
+        <input type="text" id="classmateURL"
+               value="https://francineescultura-4.onrender.com"
+               placeholder="Enter classmate's Render URL">
+
+        <button onclick="loadClassmateRecords()">
+            Retrieve Classmate Records
+        </button>
+
+        <div id="remoteMessage" class="message"></div>
+
+        <div class="table-wrapper">
+
+            <table>
+
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Student ID</th>
+                        <th>Name</th>
+                        <th>Program</th>
+                        <th>Year</th>
+                        <th>Section</th>
+                    </tr>
+                </thead>
+
                 <tbody id="classmateTable">
                     <tr>
-                        <td colspan="7">
-                            Enter your classmate's API URL to retrieve records.
+                        <td colspan="6">
+                            Click Retrieve Classmate Records.
                         </td>
                     </tr>
                 </tbody>
 
             </table>
 
-<<<<<<< HEAD
-        <div id="classmateRecords">
-
-            <p class="empty">
-                Click Retrieve Classmate Records to retrieve records.
-            </p>
-
-=======
->>>>>>> ed01109 (Update Lab 8)
         </div>
-
-        <div
-            id="remoteDetails"
-            class="remote-details"
-        ></div>
 
     </div>
 
@@ -559,473 +310,140 @@
 
 <script>
 
-<<<<<<< HEAD
-    // =================================
-    // GLOBAL VARIABLES
-    // =================================
-=======
-    // ==================================
-    // MY OWN RECORDS
-    // ==================================
->>>>>>> ed01109 (Update Lab 8)
-
     let students = [];
 
-    let editingId = null;
-<<<<<<< HEAD
-
-    let remoteStudents = [];
-=======
->>>>>>> ed01109 (Update Lab 8)
-
-    const form = document.getElementById("studentForm");
-
-<<<<<<< HEAD
-    // =================================
-    // ELEMENT REFERENCES
-    // =================================
-
-    const studentForm =
-        document.getElementById("studentForm");
-
-    const submitBtn =
-        document.getElementById("submitBtn");
-
-    const cancelBtn =
-        document.getElementById("cancelBtn");
-
-    const searchInput =
-        document.getElementById("searchInput");
-
-    const myRecords =
-        document.getElementById("myRecords");
-
-    const classmateRecords =
-        document.getElementById("classmateRecords");
-
-    const remoteDetails =
-        document.getElementById("remoteDetails");
-
-
-    // =================================
-    // SAFE HTML ESCAPING
-    // =================================
-
+    // ESCAPE HTML
     function escapeHTML(value) {
-
-        return String(value).replace(/[&<>"']/g, char => ({
-
+        return String(value ?? "").replace(/[&<>"']/g, char => ({
             "&": "&amp;",
             "<": "&lt;",
             ">": "&gt;",
             '"': "&quot;",
             "'": "&#39;"
-
         })[char]);
-
     }
 
 
-    // =================================
-    // MESSAGE FUNCTION
-    // =================================
-
+    // DISPLAY MESSAGE
     function showMessage(elementId, message, type) {
-
-        const element =
-            document.getElementById(elementId);
-
+        const element = document.getElementById(elementId);
         element.textContent = message;
-
         element.className = "message " + type;
-
     }
 
 
-    // =================================
-    // READ API RESPONSE
-    // =================================
-
-    async function readResponse(response) {
-
-        let data;
-
-        try {
-
-            data = await response.json();
-
-        } catch {
-
-            throw new Error(
-                "The server returned an invalid response."
-            );
-
-        }
-
-        if (!response.ok) {
-
-            throw new Error(
-                data.error || "Something went wrong."
-            );
-
-        }
-
-        return data;
-
-    }
-
-
-    // =================================
-    // LOAD MY DATABASE RECORDS
-    // =================================
-
-    async function loadMyRecords() {
-
-        myRecords.innerHTML =
-            '<p class="empty">Loading student records...</p>';
-=======
+    // LOAD STUDENTS
     async function loadStudents() {
 
         const table = document.getElementById("studentTable");
->>>>>>> ed01109 (Update Lab 8)
+
+        table.innerHTML =
+            '<tr><td colspan="7">Loading records...</td></tr>';
 
         try {
 
-            const response = await fetch("/partner-records");
+            const response = await fetch("/api/students");
 
-<<<<<<< HEAD
-            students = await readResponse(response);
-=======
             if (!response.ok) {
-                throw new Error("Unable to retrieve students.");
+                throw new Error("HTTP Error: " + response.status);
             }
->>>>>>> ed01109 (Update Lab 8)
 
-            if (!Array.isArray(students)) {
+            const data = await response.json();
 
-                throw new Error(
-                    "Invalid student records format."
-                );
-
-            }
+            students = Array.isArray(data)
+                ? data
+                : data.students || data.records || [];
 
             displayStudents(students);
 
+            showMessage(
+                "localMessage",
+                "Student records loaded successfully.",
+                "success"
+            );
+
         } catch (error) {
 
-<<<<<<< HEAD
-            myRecords.innerHTML =
-                `<p class="error">${escapeHTML(error.message)}</p>`;
-=======
             table.innerHTML =
-                `<tr><td colspan="7">${error.message}</td></tr>`;
->>>>>>> ed01109 (Update Lab 8)
+                '<tr><td colspan="7">Unable to load records.</td></tr>';
 
+            showMessage(
+                "localMessage",
+                "Error loading students: " + error.message,
+                "error"
+            );
         }
-
     }
 
 
+    // DISPLAY STUDENTS
     function displayStudents(data) {
 
         const table = document.getElementById("studentTable");
 
-<<<<<<< HEAD
-        const search =
-            searchInput.value.trim().toLowerCase();
-
-        const filtered = students.filter(student => {
-
-            return (
-
-                String(student.name || "")
-                    .toLowerCase()
-                    .includes(search)
-
-                ||
-
-                String(student.student_id || "")
-                    .toLowerCase()
-                    .includes(search)
-
-            );
-
-        });
-
-        if (filtered.length === 0) {
-
-            myRecords.innerHTML =
-                '<p class="empty">No student records found.</p>';
-=======
-        table.innerHTML = "";
-
-        if (!data || data.length === 0) {
-
+        if (!data.length) {
             table.innerHTML =
-                `<tr><td colspan="7">No student records found.</td></tr>`;
->>>>>>> ed01109 (Update Lab 8)
-
+                '<tr><td colspan="7">No student records found.</td></tr>';
             return;
-
         }
 
-<<<<<<< HEAD
-        myRecords.innerHTML = filtered.map(student => `
-=======
-        data.forEach(student => {
->>>>>>> ed01109 (Update Lab 8)
+        table.innerHTML = data.map(student => `
 
-            const row = document.createElement("tr");
+            <tr>
+                <td>${escapeHTML(student.id)}</td>
+                <td>${escapeHTML(student.student_id)}</td>
+                <td>${escapeHTML(student.name)}</td>
+                <td>${escapeHTML(student.program)}</td>
+                <td>${escapeHTML(student.year)}</td>
+                <td>${escapeHTML(student.section)}</td>
 
-<<<<<<< HEAD
-                <p>
-                    <b>Database ID:</b>
-                    ${escapeHTML(student.id)}
-                </p>
+                <td>
+                    <button class="view"
+                        onclick="viewStudent(${Number(student.id)})">
+                        View
+                    </button>
 
-                <p>
-                    <b>Student ID:</b>
-                    ${escapeHTML(student.student_id)}
-                </p>
+                    <button class="edit"
+                        onclick="editStudent(${Number(student.id)})">
+                        Edit
+                    </button>
 
-                <p>
-                    <b>Name:</b>
-                    ${escapeHTML(student.name)}
-                </p>
+                    <button class="delete"
+                        onclick="deleteStudent(${Number(student.id)})">
+                        Delete
+                    </button>
+                </td>
+            </tr>
 
-                <p>
-                    <b>Program:</b>
-                    ${escapeHTML(student.program)}
-                </p>
-
-                <p>
-                    <b>Year:</b>
-                    ${escapeHTML(student.year)}
-                </p>
-
-                <p>
-                    <b>Section:</b>
-                    ${escapeHTML(student.section)}
-                </p>
-
-                <button
-                    class="view-btn"
-                    onclick="viewStudent(${Number(student.id)})"
-                >
-                    View Details
-                </button>
-
-                <button
-                    class="update-btn"
-                    onclick="editStudent(${Number(student.id)})"
-                >
-                    Edit
-                </button>
-
-                <button
-                    class="delete-btn"
-                    onclick="deleteStudent(${Number(student.id)})"
-                >
-                    Delete
-                </button>
-=======
-            const values = [
-                student.id,
-                student.student_id,
-                student.name,
-                student.program,
-                student.year,
-                student.section
-            ];
-
-            values.forEach(value => {
-
-                const cell = document.createElement("td");
-                cell.textContent = value ?? "";
-                row.appendChild(cell);
-
-            });
->>>>>>> ed01109 (Update Lab 8)
-
-            const actions = document.createElement("td");
-
-            const editButton = document.createElement("button");
-            editButton.textContent = "Edit";
-            editButton.className = "edit-btn";
-            editButton.onclick = () => editStudent(student.id);
-
-            const deleteButton = document.createElement("button");
-            deleteButton.textContent = "Delete";
-            deleteButton.className = "delete-btn";
-            deleteButton.onclick = () => deleteStudent(student.id);
-
-            actions.appendChild(editButton);
-            actions.appendChild(deleteButton);
-
-            row.appendChild(actions);
-
-            table.appendChild(row);
-
-        });
-
+        `).join("");
     }
 
 
-<<<<<<< HEAD
-    // =================================
-    // GET FORM DATA
-    // =================================
-
-    function getFormData() {
-
-        return {
-
-            student_id:
-                document.getElementById("student_id")
-                    .value.trim(),
-
-            name:
-                document.getElementById("name")
-                    .value.trim(),
-
-            program:
-                document.getElementById("program")
-                    .value.trim(),
-
-            year:
-                Number(document.getElementById("year")
-                    .value),
-
-            section:
-                document.getElementById("section")
-                    .value.trim()
-
-        };
-
-    }
-
-
-    // =================================
-    // CREATE AND UPDATE STUDENT
-    // =================================
-
-    studentForm.addEventListener(
-        "submit",
-        async function(event) {
-
-            event.preventDefault();
-
-            const studentData = getFormData();
-
-            if (
-                !studentData.student_id ||
-                !studentData.name ||
-                !studentData.program ||
-                !studentData.section ||
-                !Number.isInteger(studentData.year) ||
-                studentData.year < 1 ||
-                studentData.year > 5
-            ) {
-
-                showMessage(
-                    "formMessage",
-                    "Please enter valid student information.",
-                    "error"
-                );
-
-                return;
-
-            }
-
-            const url = editingId
-                ? `/api/students/${editingId}`
-                : "/api/students";
-
-            const method = editingId
-                ? "PUT"
-                : "POST";
-
-            submitBtn.disabled = true;
-
-            try {
-
-                const response = await fetch(url, {
-
-                    method: method,
-
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-
-                    body: JSON.stringify(studentData)
-
-                });
-
-                const result = await readResponse(response);
-
-                showMessage(
-                    "formMessage",
-                    result.message || "Operation successful!",
-                    "success"
-                );
-
-                resetForm();
-
-                await loadMyRecords();
-
-            } catch (error) {
-
-                showMessage(
-                    "formMessage",
-                    error.message,
-                    "error"
-                );
-
-            } finally {
-
-                submitBtn.disabled = false;
-
-            }
-
-        }
-    );
-
-
-    // =================================
-    // EDIT STUDENT
-    // =================================
-
-    function editStudent(id) {
-
-        const student = students.find(
-            s => Number(s.id) === Number(id)
-        );
-=======
-    // CREATE AND UPDATE
-
-    form.addEventListener("submit", async function(event) {
+    // ADD OR UPDATE STUDENT
+    document.getElementById("studentForm")
+        .addEventListener("submit", async function(event) {
 
         event.preventDefault();
 
-        const studentData = {
+        const id = document.getElementById("recordId").value;
 
-            student_id: document.getElementById("student_id").value.trim(),
-            name: document.getElementById("name").value.trim(),
-            program: document.getElementById("program").value.trim(),
+        const student = {
+
+            student_id: document.getElementById("student_id").value,
+            name: document.getElementById("name").value,
+            program: document.getElementById("program").value,
             year: Number(document.getElementById("year").value),
-            section: document.getElementById("section").value.trim()
+            section: document.getElementById("section").value
 
         };
 
-        const isEditing = editingId !== null;
-
-        const url = isEditing
-            ? `/api/students/${editingId}`
-            : "/api/students";
-
-        const method = isEditing ? "PUT" : "POST";
-
         try {
+
+            const url = id
+                ? `/api/students/${id}`
+                : "/api/students";
+
+            const method = id ? "PUT" : "POST";
 
             const response = await fetch(url, {
 
@@ -1035,46 +453,75 @@
                     "Content-Type": "application/json"
                 },
 
-                body: JSON.stringify(studentData)
+                body: JSON.stringify(student)
 
             });
 
             const result = await response.json();
 
             if (!response.ok) {
-                throw new Error(result.error || "Operation failed.");
+                throw new Error(result.error || "Unable to save student.");
             }
 
-            showMessage(result.message || "Operation successful!", "green");
+            showMessage(
+                "formMessage",
+                id
+                    ? "Student updated successfully!"
+                    : "Student added successfully!",
+                "success"
+            );
 
             resetForm();
-
             await loadStudents();
 
         } catch (error) {
 
-            showMessage(error.message, "red");
+            showMessage(
+                "formMessage",
+                error.message,
+                "error"
+            );
 
         }
 
     });
 
 
-    // EDIT
+    // VIEW STUDENT
+    function viewStudent(id) {
 
-    function editStudent(id) {
-
-        const student = students.find(s => Number(s.id) === Number(id));
->>>>>>> ed01109 (Update Lab 8)
+        const student = students.find(
+            item => Number(item.id) === id
+        );
 
         if (!student) return;
 
-        editingId = id;
+        alert(
+            "STUDENT DETAILS\n\n" +
+            "ID: " + student.id + "\n" +
+            "Student ID: " + student.student_id + "\n" +
+            "Name: " + student.name + "\n" +
+            "Program: " + student.program + "\n" +
+            "Year: " + student.year + "\n" +
+            "Section: " + student.section
+        );
+    }
+
+
+    // EDIT STUDENT
+    function editStudent(id) {
+
+        const student = students.find(
+            item => Number(item.id) === id
+        );
+
+        if (!student) return;
+
+        document.getElementById("recordId").value = student.id;
 
         document.getElementById("student_id").value =
             student.student_id;
 
-<<<<<<< HEAD
         document.getElementById("name").value =
             student.name;
 
@@ -1087,78 +534,23 @@
         document.getElementById("section").value =
             student.section;
 
-        submitBtn.textContent = "Update Student";
+        document.getElementById("formTitle").textContent =
+            "Edit Student Record";
 
-        submitBtn.className = "update-btn";
+        document.getElementById("submitButton").textContent =
+            "Update Student";
 
-        cancelBtn.classList.remove("hidden");
+        document.getElementById("cancelButton").hidden = false;
 
-        showMessage(
-            "formMessage",
-            "Editing student record.",
-            "success"
-        );
-
-        studentForm.scrollIntoView({
+        window.scrollTo({
+            top: 0,
             behavior: "smooth"
         });
-=======
-        document.getElementById("formTitle").textContent = "Edit Student";
-
-        document.getElementById("submitBtn").textContent = "Update Student";
-
-        document.getElementById("cancelBtn").style.display = "inline-block";
-
-        window.scrollTo({ top: 0, behavior: "smooth" });
->>>>>>> ed01109 (Update Lab 8)
 
     }
 
 
-<<<<<<< HEAD
-    // =================================
-    // CANCEL EDIT
-    // =================================
-
-    function cancelEdit() {
-
-        resetForm();
-
-        showMessage(
-            "formMessage",
-            "Editing cancelled.",
-            "success"
-        );
-
-    }
-
-
-    // =================================
-    // RESET FORM
-    // =================================
-
-    function resetForm() {
-
-        studentForm.reset();
-
-        editingId = null;
-
-        submitBtn.textContent = "Add Student";
-
-        submitBtn.className = "add-btn";
-
-        cancelBtn.classList.add("hidden");
-
-    }
-
-
-    // =================================
     // DELETE STUDENT
-    // =================================
-=======
-    // DELETE
->>>>>>> ed01109 (Update Lab 8)
-
     async function deleteStudent(id) {
 
         if (!confirm("Are you sure you want to delete this student?")) {
@@ -1167,43 +559,32 @@
 
         try {
 
-            const response = await fetch(`/api/students/${id}`, {
-                method: "DELETE"
-            });
-
-            const result = await readResponse(response);
-
-            showMessage(
-                "myMessage",
-                result.message || "Student deleted successfully!",
-                "success"
+            const response = await fetch(
+                `/api/students/${id}`,
+                { method: "DELETE" }
             );
 
-<<<<<<< HEAD
-            if (Number(editingId) === Number(id)) {
+            const result = await response.json();
 
-=======
-            showMessage(result.message, "green");
-
-            if (Number(editingId) === Number(id)) {
->>>>>>> ed01109 (Update Lab 8)
-                resetForm();
-
+            if (!response.ok) {
+                throw new Error(result.error || "Delete failed.");
             }
+
+            showMessage(
+                "localMessage",
+                "Student deleted successfully!",
+                "success"
+            );
 
             await loadStudents();
 
         } catch (error) {
 
-<<<<<<< HEAD
             showMessage(
-                "myMessage",
+                "localMessage",
                 error.message,
                 "error"
             );
-=======
-            showMessage(error.message, "red");
->>>>>>> ed01109 (Update Lab 8)
 
         }
 
@@ -1211,77 +592,40 @@
 
 
     // RESET FORM
-
     function resetForm() {
 
-        form.reset();
+        document.getElementById("studentForm").reset();
 
-<<<<<<< HEAD
-            const response = await fetch(
-                `/api/students/${id}`
-            );
+        document.getElementById("recordId").value = "";
 
-            const student = await readResponse(response);
+        document.getElementById("formTitle").textContent =
+            "Add Student Record";
 
-            alert(
+        document.getElementById("submitButton").textContent =
+            "Add Student";
 
-                "STUDENT DETAILS\n\n" +
-
-                "Database ID: " + student.id + "\n" +
-
-                "Student ID: " + student.student_id + "\n" +
-
-                "Name: " + student.name + "\n" +
-
-                "Program: " + student.program + "\n" +
-
-                "Year: " + student.year + "\n" +
-
-                "Section: " + student.section
-
-=======
-        editingId = null;
-
-        document.getElementById("formTitle").textContent = "Add New Student";
-
-        document.getElementById("submitBtn").textContent = "Add Student";
-
-        document.getElementById("cancelBtn").style.display = "none";
+        document.getElementById("cancelButton").hidden = true;
 
     }
 
 
-    // MESSAGE
+    // SEARCH STUDENTS
+    document.getElementById("searchInput")
+        .addEventListener("input", function() {
 
-    function showMessage(message, color) {
-
-        const element = document.getElementById("message");
-
-        element.textContent = message;
-        element.style.color = color;
-
-    }
-
-
-    // SEARCH
-
-    document.getElementById("searchInput").addEventListener("input", function() {
-
-        const keyword = this.value.toLowerCase();
+        const keyword = this.value.toLowerCase().trim();
 
         const filtered = students.filter(student => {
 
             return [
-
+                student.id,
                 student.student_id,
                 student.name,
                 student.program,
                 student.year,
                 student.section
-
             ].some(value =>
                 String(value ?? "").toLowerCase().includes(keyword)
->>>>>>> ed01109 (Update Lab 8)
             );
 
         });
@@ -1291,437 +635,96 @@
     });
 
 
-<<<<<<< HEAD
-    // =================================
-    // LOAD CLASSMATE REMOTE API
-    // READ ONLY
-    // =================================
-
+    // RETRIEVE CLASSMATE RECORDS
     async function loadClassmateRecords() {
-
-        classmateRecords.innerHTML =
-            '<p class="empty">Connecting to classmate API...</p>';
-
-        remoteDetails.innerHTML = "";
-
-        remoteStudents = [];
-=======
-    // ==================================
-    // CLASSMATE'S REMOTE API
-    // ==================================
-
-    async function loadClassmateRecords() {
-
-        const apiURL = document.getElementById("classmateURL").value.trim();
 
         const table = document.getElementById("classmateTable");
 
-        const message = document.getElementById("remoteMessage");
+        const baseURL = document.getElementById("classmateURL")
+            .value.trim().replace(/\/+$/, "");
 
-        document.getElementById("remoteDetails").innerHTML = "";
->>>>>>> ed01109 (Update Lab 8)
+        if (!baseURL) {
 
-        showMessage(
-            "remoteMessage",
-            "Retrieving classmate records...",
-            "success"
-        );
-
-<<<<<<< HEAD
-        const retrieveBtn =
-            document.getElementById("retrieveBtn");
-
-        retrieveBtn.disabled = true;
-
-        try {
-
-            // REQUEST THROUGH FLASK BACKEND
-
-            const response = await fetch(
-                "/api/classmate-courses"
+            showMessage(
+                "remoteMessage",
+                "Please enter your classmate's API URL.",
+                "error"
             );
-=======
-            message.style.color = "red";
-            message.textContent = "Please enter your classmate's API URL.";
 
             return;
-
         }
+
+        table.innerHTML =
+            '<tr><td colspan="6">Retrieving records...</td></tr>';
 
         try {
 
-            message.style.color = "#283593";
-            message.textContent = "Retrieving classmate records...";
->>>>>>> ed01109 (Update Lab 8)
+            const apiURL = baseURL + "/api/students";
 
-            const data = await readResponse(response);
+            const response = await fetch(apiURL);
 
-<<<<<<< HEAD
-=======
             if (!response.ok) {
-                throw new Error("Unable to retrieve classmate API.");
+                throw new Error(
+                    "Classmate API returned HTTP " + response.status
+                );
             }
->>>>>>> ed01109 (Update Lab 8)
 
-            // HANDLE DIFFERENT JSON FORMATS
+            const data = await response.json();
 
-<<<<<<< HEAD
-            let records = [];
+            const records = Array.isArray(data)
+                ? data
+                : data.students || data.records || [];
 
-            if (Array.isArray(data)) {
+            if (!Array.isArray(records)) {
+                throw new Error("Invalid API response format.");
+            }
 
-                records = data;
+            if (!records.length) {
 
-            } else if (Array.isArray(data.courses)) {
-
-                records = data.courses;
-
-            } else if (Array.isArray(data.data)) {
-
-                records = data.data;
-
-            } else if (Array.isArray(data.students)) {
-
-                records = data.students;
+                table.innerHTML =
+                    '<tr><td colspan="6">No classmate records found.</td></tr>';
 
             } else {
 
-                records = [data];
+                table.innerHTML = records.map(student => `
 
-            }
+                    <tr>
+                        <td>${escapeHTML(student.id)}</td>
+                        <td>${escapeHTML(student.student_id)}</td>
+                        <td>${escapeHTML(student.name)}</td>
+                        <td>${escapeHTML(student.program)}</td>
+                        <td>${escapeHTML(student.year)}</td>
+                        <td>${escapeHTML(student.section)}</td>
+                    </tr>
 
-
-            remoteStudents = records;
-
-            if (records.length === 0) {
-
-                classmateRecords.innerHTML =
-                    '<p class="empty">No classmate records found.</p>';
-
-            } else {
-
-                renderClassmateRecords();
+                `).join("");
 
             }
 
             showMessage(
                 "remoteMessage",
-                "Classmate API retrieved successfully!",
+                "Classmate records retrieved successfully!",
                 "success"
             );
 
         } catch (error) {
 
-            classmateRecords.innerHTML =
-                `<p class="error">${escapeHTML(error.message)}</p>`;
+            table.innerHTML =
+                '<tr><td colspan="6">Unable to load records.</td></tr>';
 
             showMessage(
                 "remoteMessage",
-                "Unable to retrieve classmate API. Please check the server.",
+                "Unable to retrieve classmate API: " + error.message,
                 "error"
             );
-=======
-            if (!Array.isArray(data)) {
-                throw new Error("Invalid API format. Expected a list of students.");
-            }
-
-            table.innerHTML = "";
-
-            if (data.length === 0) {
-
-                table.innerHTML =
-                    `<tr><td colspan="7">No classmate records found.</td></tr>`;
-
-            }
-
-            data.forEach(student => {
-
-                const row = document.createElement("tr");
-
-                const values = [
-                    student.id,
-                    student.student_id,
-                    student.name,
-                    student.program,
-                    student.year,
-                    student.section
-                ];
-
-                values.forEach(value => {
-
-                    const cell = document.createElement("td");
-                    cell.textContent = value ?? "";
-                    row.appendChild(cell);
-
-                });
-
-                const actionCell = document.createElement("td");
-
-                const detailsButton = document.createElement("button");
-
-                detailsButton.textContent = "View Details";
-                detailsButton.className = "details-btn";
-
-                detailsButton.onclick = () => viewRemoteDetails(student);
-
-                actionCell.appendChild(detailsButton);
-
-                row.appendChild(actionCell);
-
-                table.appendChild(row);
-
-            });
-
-            message.style.color = "green";
-            message.textContent = "Classmate records retrieved successfully!";
-
-        } catch (error) {
-
-            table.innerHTML =
-                `<tr><td colspan="7">Unable to load records.</td></tr>`;
-
-            message.style.color = "red";
-            message.textContent =
-                error.message + " Check the API URL and CORS settings.";
->>>>>>> ed01109 (Update Lab 8)
-
-        } finally {
-
-            retrieveBtn.disabled = false;
 
         }
 
     }
 
 
-<<<<<<< HEAD
-    // =================================
-    // DISPLAY CLASSMATE RECORDS
-    // =================================
-
-    function renderClassmateRecords() {
-
-        if (remoteStudents.length === 0) {
-
-            classmateRecords.innerHTML =
-                '<p class="empty">No classmate records found.</p>';
-
-            return;
-
-        }
-
-        classmateRecords.innerHTML =
-            remoteStudents.map((record, index) => {
-
-                if (
-                    typeof record !== "object" ||
-                    record === null
-                ) {
-
-                    return `
-
-                        <div class="student-card">
-
-                            <h3>Record ${index + 1}</h3>
-
-                            <p>
-                                ${escapeHTML(record)}
-                            </p>
-
-                            <p><b>Access:</b> Read Only</p>
-
-                        </div>
-
-                    `;
-
-                }
-
-                const recordHTML = Object.entries(record)
-                    .map(([key, value]) => {
-
-                        const displayValue =
-                            typeof value === "object" && value !== null
-                                ? JSON.stringify(value)
-                                : value ?? "N/A";
-
-                        return `
-
-                            <p>
-                                <b>${escapeHTML(key)}:</b>
-                                ${escapeHTML(displayValue)}
-                            </p>
-
-                        `;
-
-                    }).join("");
-
-                return `
-
-                    <div class="student-card">
-
-                        <h3>Record ${index + 1}</h3>
-
-                        ${recordHTML}
-
-                        <button
-                            class="view-btn"
-                            onclick="viewRemoteStudent(${index})"
-                        >
-                            View Details
-                        </button>
-
-                        <p>
-                            <b>Access:</b> Read Only
-                        </p>
-
-                    </div>
-
-                `;
-
-            }).join("");
-
-    }
-
-
-    // =================================
-    // VIEW REMOTE RECORD DETAILS
-    // READ ONLY
-    // =================================
-=======
-    // VIEW REMOTE STUDENT DETAILS
->>>>>>> ed01109 (Update Lab 8)
-
-    function viewRemoteDetails(student) {
-
-<<<<<<< HEAD
-        const record = remoteStudents[index];
-
-        if (!record || typeof record !== "object") {
-
-            remoteDetails.innerHTML = "";
-
-            return;
-
-        }
-
-        const recordHTML = Object.entries(record)
-            .map(([key, value]) => {
-
-                const displayValue =
-                    typeof value === "object" && value !== null
-                        ? JSON.stringify(value)
-                        : value ?? "N/A";
-
-                return `
-
-                    <p>
-                        <b>${escapeHTML(key)}:</b>
-                        ${escapeHTML(displayValue)}
-                    </p>
-
-                `;
-
-            }).join("");
-
-        remoteDetails.innerHTML = `
-=======
-        const container = document.getElementById("remoteDetails");
-
-        container.innerHTML = "";
-
-        const card = document.createElement("div");
->>>>>>> ed01109 (Update Lab 8)
-
-        card.className = "card";
-
-        const heading = document.createElement("h3");
-        heading.textContent = "Classmate Student Details";
-
-<<<<<<< HEAD
-                ${recordHTML}
-
-                <p>
-                    <b>Access:</b> Read Only
-                </p>
-=======
-        card.appendChild(heading);
-
-        const fields = [
-            ["ID", student.id],
-            ["Student ID", student.student_id],
-            ["Name", student.name],
-            ["Program", student.program],
-            ["Year", student.year],
-            ["Section", student.section]
-        ];
-
-        fields.forEach(([label, value]) => {
-
-            const paragraph = document.createElement("p");
-
-            const strong = document.createElement("strong");
-            strong.textContent = label + ": ";
-
-            paragraph.appendChild(strong);
-            paragraph.appendChild(document.createTextNode(value ?? "N/A"));
-
-            card.appendChild(paragraph);
->>>>>>> ed01109 (Update Lab 8)
-
-        });
-
-        const note = document.createElement("p");
-        note.textContent = "This is read-only classmate data.";
-        card.appendChild(note);
-
-        container.appendChild(card);
-
-        remoteDetails.scrollIntoView({
-            behavior: "smooth",
-            block: "nearest"
-        });
-
-    }
-
-
-<<<<<<< HEAD
-    // =================================
-    // EVENT LISTENERS
-    // =================================
-
-    searchInput.addEventListener(
-        "input",
-        renderMyRecords
-    );
-
-    cancelBtn.addEventListener(
-        "click",
-        cancelEdit
-    );
-
-    document.getElementById("refreshBtn")
-        .addEventListener(
-            "click",
-            loadMyRecords
-        );
-
-    document.getElementById("retrieveBtn")
-        .addEventListener(
-            "click",
-            loadClassmateRecords
-        );
-
-
-    // =================================
     // LOAD RECORDS WHEN PAGE OPENS
-    // =================================
-
-    loadMyRecords();
-=======
-    // LOAD MY RECORDS WHEN PAGE OPENS
-
-    loadStudents();
->>>>>>> ed01109 (Update Lab 8)
+    document.addEventListener("DOMContentLoaded", loadStudents);
 
 </script>
 
