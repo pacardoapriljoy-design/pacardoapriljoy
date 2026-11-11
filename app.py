@@ -962,9 +962,19 @@ if __name__ == '__main__':
         port=5000
     )
 =======
-            "error": "Unable to retrieve classmate records",
+                   "error": "Unable to retrieve classmate records",
             "details": str(e)
         }), 502
-        
+
+
+# ===================================
+# RUN FLASK APPLICATION
+# ===================================
+
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    init_db()
+    app.run(
+        host='0.0.0.0',
+        port=5000,
+        debug=True
+    )
