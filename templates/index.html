@@ -1,9 +1,9 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Student CRUD Management System</title>
 
     <style>
@@ -38,6 +38,10 @@
             margin-bottom: 10px;
         }
 
+        header p {
+            margin-top: 6px;
+        }
+
         .card {
             background: white;
             padding: 25px;
@@ -63,6 +67,13 @@
             border: 1px solid #d5c2e2;
             border-radius: 7px;
             font-size: 14px;
+            background: white;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #a77bc5;
+            box-shadow: 0 0 0 3px rgba(167,123,197,0.15);
         }
 
         button {
@@ -72,9 +83,21 @@
             cursor: pointer;
             margin: 5px 3px;
             font-weight: bold;
+            transition: 0.2s;
         }
 
-        .add-btn {
+        button:hover {
+            opacity: 0.85;
+            transform: translateY(-1px);
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .add-btn, .load-btn {
             background: #76528f;
             color: white;
         }
@@ -94,18 +117,9 @@
             color: white;
         }
 
-        .load-btn {
-            background: #76528f;
-            color: white;
-        }
-
         .cancel-btn {
             background: #888;
             color: white;
-        }
-
-        button:hover {
-            opacity: 0.85;
         }
 
         .student-card {
@@ -114,10 +128,17 @@
             padding: 17px;
             border-radius: 8px;
             margin-bottom: 12px;
+            overflow-wrap: anywhere;
+        }
+
+        .student-card h3 {
+            margin-bottom: 8px;
+            color: #76528f;
         }
 
         .student-card p {
             margin: 7px 0;
+            line-height: 1.4;
         }
 
         .search-box {
@@ -148,6 +169,22 @@
             margin-bottom: 12px;
         }
 
+        .remote-url {
+            margin-bottom: 10px;
+        }
+
+        .remote-details {
+            margin-top: 15px;
+        }
+
+        .form-actions {
+            margin-top: 10px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
         @media(max-width: 650px) {
             .form-grid {
                 grid-template-columns: 1fr;
@@ -155,6 +192,22 @@
 
             body {
                 padding: 12px;
+            }
+
+            header {
+                padding: 22px 15px;
+            }
+
+            header h1 {
+                font-size: 23px;
+            }
+
+            .card {
+                padding: 18px;
+            }
+
+            button {
+                margin: 5px 2px;
             }
         }
     </style>
@@ -164,107 +217,294 @@
 
 <div class="container">
 
+    <!-- HEADER -->
+
     <header>
         <h1>Student CRUD Management System</h1>
-        <p>Laboratory Activity 8 - SQLite Database and API Integration</p>
-        <p>April Joy Pacardo | BSIT 3B Dijkstra</p>
+
+        <p>
+            Laboratory Activity 8 - SQLite Database and API Integration
+        </p>
+
+        <p>
+            April Joy Pacardo | BSIT 3B Dijkstra
+        </p>
     </header>
 
-    <!-- STUDENT FORM -->
+
+    <!-- ================================= -->
+    <!-- STUDENT INFORMATION FORM -->
+    <!-- ================================= -->
+
     <div class="card">
+
         <h2>Student Information Form</h2>
 
         <form id="studentForm">
 
             <div class="form-grid">
 
-                <input type="text" id="student_id"
-                    placeholder="Student ID" required>
+                <input
+                    type="text"
+                    id="student_id"
+                    placeholder="Student ID"
+                    maxlength="50"
+                    required
+                >
 
-                <input type="text" id="name"
-                    placeholder="Full Name" required>
+                <input
+                    type="text"
+                    id="name"
+                    placeholder="Full Name"
+                    maxlength="150"
+                    required
+                >
 
-                <input type="text" id="program"
-                    placeholder="Program (BSIT, BSCS)" required>
+                <input
+                    type="text"
+                    id="program"
+                    placeholder="Program (BSIT, BSCS)"
+                    maxlength="50"
+                    required
+                >
 
-                <input type="number" id="year"
-                    placeholder="Year Level" min="1" max="5" required>
+                <input
+                    type="number"
+                    id="year"
+                    placeholder="Year Level"
+                    min="1"
+                    max="5"
+                    required
+                >
 
-                <input type="text" id="section"
-                    placeholder="Section (Dijkstra, A, B)" required>
+                <input
+                    type="text"
+                    id="section"
+                    placeholder="Section (Dijkstra, A, B)"
+                    maxlength="50"
+                    required
+                >
 
             </div>
 
             <p id="formMessage" class="message"></p>
 
-            <button type="submit" class="add-btn" id="submitBtn">
-                Add Student
-            </button>
+            <div class="form-actions">
 
-            <button type="button" class="cancel-btn"
-                id="cancelBtn" onclick="cancelEdit()" hidden>
-                Cancel Edit
-            </button>
+                <button
+                    type="submit"
+                    class="add-btn"
+                    id="submitBtn"
+                >
+                    Add Student
+                </button>
+
+                <button
+                    type="button"
+                    class="cancel-btn hidden"
+                    id="cancelBtn"
+                >
+                    Cancel Edit
+                </button>
+
+            </div>
 
         </form>
+
     </div>
 
+
+    <!-- ================================= -->
     <!-- MY RECORDS -->
+    <!-- ================================= -->
+
     <div class="card">
 
         <h2>My Records</h2>
-        <p class="section-label">Source: My SQLite Database</p>
 
-        <input type="text" id="searchInput"
+        <p class="section-label">
+            Source: My SQLite Database
+        </p>
+
+        <input
+            type="text"
+            id="searchInput"
             class="search-box"
             placeholder="Search student by name or ID..."
-            oninput="renderMyRecords()">
+        >
 
-        <button class="load-btn" onclick="loadMyRecords()">
+        <button
+            class="load-btn"
+            id="refreshBtn"
+        >
             Refresh My Records
         </button>
 
         <p id="myMessage" class="message"></p>
 
         <div id="myRecords">
-            <p class="empty">Loading student records...</p>
+
+            <p class="empty">
+                Loading student records...
+            </p>
+
         </div>
 
     </div>
 
+
+    <!-- ================================= -->
     <!-- CLASSMATE RECORDS -->
+    <!-- ================================= -->
+
     <div class="card">
 
         <h2>Classmate's Records</h2>
-        <p class="section-label">Source: Classmate's Remote API (Read Only)</p>
 
-        <input type="text" id="classmateAPI"
-            placeholder="Enter your classmate's API URL"
-            value="https://palencia-shamainejoyce.onrender.com/courses">
+        <p class="section-label">
+            Source: Classmate's Remote API (Read Only)
+        </p>
 
-        <button class="load-btn" onclick="loadClassmateRecords()">
+        <input
+            type="text"
+            id="classmateAPI"
+            class="remote-url"
+            value="https://francineescultura-4.onrender.com"
+            readonly
+        >
+
+        <button
+            class="load-btn"
+            id="retrieveBtn"
+        >
             Retrieve Classmate Records
         </button>
 
         <p id="remoteMessage" class="message"></p>
 
         <div id="classmateRecords">
+
             <p class="empty">
-                Enter your classmate's API URL to retrieve records.
+                Click Retrieve Classmate Records to retrieve records.
             </p>
+
         </div>
 
-        <div id="remoteDetails"></div>
+        <div
+            id="remoteDetails"
+            class="remote-details"
+        ></div>
 
     </div>
 
 </div>
 
+
 <script>
 
+    // =================================
+    // GLOBAL VARIABLES
+    // =================================
+
     let students = [];
+
     let editingId = null;
+
     let remoteStudents = [];
+
+
+    // =================================
+    // ELEMENT REFERENCES
+    // =================================
+
+    const studentForm =
+        document.getElementById("studentForm");
+
+    const submitBtn =
+        document.getElementById("submitBtn");
+
+    const cancelBtn =
+        document.getElementById("cancelBtn");
+
+    const searchInput =
+        document.getElementById("searchInput");
+
+    const myRecords =
+        document.getElementById("myRecords");
+
+    const classmateRecords =
+        document.getElementById("classmateRecords");
+
+    const remoteDetails =
+        document.getElementById("remoteDetails");
+
+
+    // =================================
+    // SAFE HTML ESCAPING
+    // =================================
+
+    function escapeHTML(value) {
+
+        return String(value).replace(/[&<>"']/g, char => ({
+
+            "&": "&amp;",
+            "<": "&lt;",
+            ">": "&gt;",
+            '"': "&quot;",
+            "'": "&#39;"
+
+        })[char]);
+
+    }
+
+
+    // =================================
+    // MESSAGE FUNCTION
+    // =================================
+
+    function showMessage(elementId, message, type) {
+
+        const element =
+            document.getElementById(elementId);
+
+        element.textContent = message;
+
+        element.className = "message " + type;
+
+    }
+
+
+    // =================================
+    // READ API RESPONSE
+    // =================================
+
+    async function readResponse(response) {
+
+        let data;
+
+        try {
+
+            data = await response.json();
+
+        } catch {
+
+            throw new Error(
+                "The server returned an invalid response."
+            );
+
+        }
+
+        if (!response.ok) {
+
+            throw new Error(
+                data.error || "Something went wrong."
+            );
+
+        }
+
+        return data;
+
+    }
 
 
     // =================================
@@ -273,26 +513,32 @@
 
     async function loadMyRecords() {
 
-        const container = document.getElementById("myRecords");
+        myRecords.innerHTML =
+            '<p class="empty">Loading student records...</p>';
 
         try {
 
             const response = await fetch("/api/students");
 
-            if (!response.ok) {
-                throw new Error("Unable to retrieve student records.");
-            }
+            students = await readResponse(response);
 
-            students = await response.json();
+            if (!Array.isArray(students)) {
+
+                throw new Error(
+                    "Invalid student records format."
+                );
+
+            }
 
             renderMyRecords();
 
         } catch (error) {
 
-            container.innerHTML =
+            myRecords.innerHTML =
                 `<p class="error">${escapeHTML(error.message)}</p>`;
 
         }
+
     }
 
 
@@ -302,113 +548,96 @@
 
     function renderMyRecords() {
 
-        const container = document.getElementById("myRecords");
+        const search =
+            searchInput.value.trim().toLowerCase();
 
-        const search = document.getElementById("searchInput")
-            .value.toLowerCase();
+        const filtered = students.filter(student => {
 
-        const filtered = students.filter(student =>
-            String(student.name).toLowerCase().includes(search) ||
-            String(student.student_id).toLowerCase().includes(search)
-        );
+            return (
+
+                String(student.name || "")
+                    .toLowerCase()
+                    .includes(search)
+
+                ||
+
+                String(student.student_id || "")
+                    .toLowerCase()
+                    .includes(search)
+
+            );
+
+        });
 
         if (filtered.length === 0) {
 
-            container.innerHTML =
+            myRecords.innerHTML =
                 '<p class="empty">No student records found.</p>';
 
             return;
+
         }
 
-        container.innerHTML = filtered.map(student => `
+        myRecords.innerHTML = filtered.map(student => `
 
             <div class="student-card">
 
-                <p><b>Database ID:</b> ${student.id}</p>
-                <p><b>Student ID:</b> ${escapeHTML(student.student_id)}</p>
-                <p><b>Name:</b> ${escapeHTML(student.name)}</p>
-                <p><b>Program:</b> ${escapeHTML(student.program)}</p>
-                <p><b>Year:</b> ${escapeHTML(student.year)}</p>
-                <p><b>Section:</b> ${escapeHTML(student.section)}</p>
+                <p>
+                    <b>Database ID:</b>
+                    ${escapeHTML(student.id)}
+                </p>
 
-                <button class="view-btn"
-                    onclick="viewStudent(${student.id})">
+                <p>
+                    <b>Student ID:</b>
+                    ${escapeHTML(student.student_id)}
+                </p>
+
+                <p>
+                    <b>Name:</b>
+                    ${escapeHTML(student.name)}
+                </p>
+
+                <p>
+                    <b>Program:</b>
+                    ${escapeHTML(student.program)}
+                </p>
+
+                <p>
+                    <b>Year:</b>
+                    ${escapeHTML(student.year)}
+                </p>
+
+                <p>
+                    <b>Section:</b>
+                    ${escapeHTML(student.section)}
+                </p>
+
+                <button
+                    class="view-btn"
+                    onclick="viewStudent(${Number(student.id)})"
+                >
                     View Details
                 </button>
 
-                <button class="update-btn"
-                    onclick="editStudent(${student.id})">
+                <button
+                    class="update-btn"
+                    onclick="editStudent(${Number(student.id)})"
+                >
                     Edit
                 </button>
 
-                <button class="delete-btn"
-                    onclick="deleteStudent(${student.id})">
+                <button
+                    class="delete-btn"
+                    onclick="deleteStudent(${Number(student.id)})"
+                >
                     Delete
                 </button>
 
             </div>
 
         `).join("");
+
     }
-
-
-    // =================================
-    // CREATE AND UPDATE STUDENT
-    // =================================
-
-    document.getElementById("studentForm")
-        .addEventListener("submit", async function(event) {
-
-        event.preventDefault();
-
-        const studentData = getFormData();
-
-        const url = editingId
-            ? `/api/students/${editingId}`
-            : "/api/students";
-
-        const method = editingId ? "PUT" : "POST";
-
-        try {
-
-            const response = await fetch(url, {
-
-                method: method,
-
-                headers: {
-                    "Content-Type": "application/json"
-                },
-
-                body: JSON.stringify(studentData)
-
-            });
-
-            const result = await response.json();
-
-            if (!response.ok) {
-                throw new Error(result.error || "Operation failed.");
-            }
-
-            showMessage(
-                "formMessage",
-                result.message,
-                "success"
-            );
-
-            resetForm();
-
-            await loadMyRecords();
-
-        } catch (error) {
-
-            showMessage(
-                "formMessage",
-                error.message,
-                "error"
-            );
-
-        }
-    });
 
 
     // =================================
@@ -419,18 +648,115 @@
 
         return {
 
-            student_id: document.getElementById("student_id").value.trim(),
+            student_id:
+                document.getElementById("student_id")
+                    .value.trim(),
 
-            name: document.getElementById("name").value.trim(),
+            name:
+                document.getElementById("name")
+                    .value.trim(),
 
-            program: document.getElementById("program").value.trim(),
+            program:
+                document.getElementById("program")
+                    .value.trim(),
 
-            year: document.getElementById("year").value,
+            year:
+                Number(document.getElementById("year")
+                    .value),
 
-            section: document.getElementById("section").value.trim()
+            section:
+                document.getElementById("section")
+                    .value.trim()
 
         };
+
     }
+
+
+    // =================================
+    // CREATE AND UPDATE STUDENT
+    // =================================
+
+    studentForm.addEventListener(
+        "submit",
+        async function(event) {
+
+            event.preventDefault();
+
+            const studentData = getFormData();
+
+            if (
+                !studentData.student_id ||
+                !studentData.name ||
+                !studentData.program ||
+                !studentData.section ||
+                !Number.isInteger(studentData.year) ||
+                studentData.year < 1 ||
+                studentData.year > 5
+            ) {
+
+                showMessage(
+                    "formMessage",
+                    "Please enter valid student information.",
+                    "error"
+                );
+
+                return;
+
+            }
+
+            const url = editingId
+                ? `/api/students/${editingId}`
+                : "/api/students";
+
+            const method = editingId
+                ? "PUT"
+                : "POST";
+
+            submitBtn.disabled = true;
+
+            try {
+
+                const response = await fetch(url, {
+
+                    method: method,
+
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+
+                    body: JSON.stringify(studentData)
+
+                });
+
+                const result = await readResponse(response);
+
+                showMessage(
+                    "formMessage",
+                    result.message || "Operation successful!",
+                    "success"
+                );
+
+                resetForm();
+
+                await loadMyRecords();
+
+            } catch (error) {
+
+                showMessage(
+                    "formMessage",
+                    error.message,
+                    "error"
+                );
+
+            } finally {
+
+                submitBtn.disabled = false;
+
+            }
+
+        }
+    );
 
 
     // =================================
@@ -439,29 +765,45 @@
 
     function editStudent(id) {
 
-        const student = students.find(s => s.id === id);
+        const student = students.find(
+            s => Number(s.id) === Number(id)
+        );
 
         if (!student) return;
 
         editingId = id;
 
-        document.getElementById("student_id").value = student.student_id;
-        document.getElementById("name").value = student.name;
-        document.getElementById("program").value = student.program;
-        document.getElementById("year").value = student.year;
-        document.getElementById("section").value = student.section;
+        document.getElementById("student_id").value =
+            student.student_id;
 
-        document.getElementById("submitBtn").textContent =
-            "Update Student";
+        document.getElementById("name").value =
+            student.name;
 
-        document.getElementById("submitBtn").className =
-            "update-btn";
+        document.getElementById("program").value =
+            student.program;
 
-        document.getElementById("cancelBtn").hidden = false;
+        document.getElementById("year").value =
+            student.year;
 
-        document.querySelector("#studentForm").scrollIntoView({
+        document.getElementById("section").value =
+            student.section;
+
+        submitBtn.textContent = "Update Student";
+
+        submitBtn.className = "update-btn";
+
+        cancelBtn.classList.remove("hidden");
+
+        showMessage(
+            "formMessage",
+            "Editing student record.",
+            "success"
+        );
+
+        studentForm.scrollIntoView({
             behavior: "smooth"
         });
+
     }
 
 
@@ -470,7 +812,15 @@
     // =================================
 
     function cancelEdit() {
+
         resetForm();
+
+        showMessage(
+            "formMessage",
+            "Editing cancelled.",
+            "success"
+        );
+
     }
 
 
@@ -480,17 +830,16 @@
 
     function resetForm() {
 
-        document.getElementById("studentForm").reset();
+        studentForm.reset();
 
         editingId = null;
 
-        document.getElementById("submitBtn").textContent =
-            "Add Student";
+        submitBtn.textContent = "Add Student";
 
-        document.getElementById("submitBtn").className =
-            "add-btn";
+        submitBtn.className = "add-btn";
 
-        document.getElementById("cancelBtn").hidden = true;
+        cancelBtn.classList.add("hidden");
+
     }
 
 
@@ -515,25 +864,32 @@
                 }
             );
 
-            const result = await response.json();
+            const result = await readResponse(response);
 
-            if (!response.ok) {
-                throw new Error(result.error || "Delete failed.");
-            }
+            showMessage(
+                "myMessage",
+                result.message || "Student deleted successfully!",
+                "success"
+            );
 
-            showMessage("myMessage", result.message, "success");
+            if (Number(editingId) === Number(id)) {
 
-            if (editingId === id) {
                 resetForm();
+
             }
 
             await loadMyRecords();
 
         } catch (error) {
 
-            showMessage("myMessage", error.message, "error");
+            showMessage(
+                "myMessage",
+                error.message,
+                "error"
+            );
 
         }
+
     }
 
 
@@ -545,22 +901,28 @@
 
         try {
 
-            const response = await fetch(`/api/students/${id}`);
+            const response = await fetch(
+                `/api/students/${id}`
+            );
 
-            const student = await response.json();
-
-            if (!response.ok) {
-                throw new Error(student.error || "Student not found.");
-            }
+            const student = await readResponse(response);
 
             alert(
+
                 "STUDENT DETAILS\n\n" +
+
                 "Database ID: " + student.id + "\n" +
+
                 "Student ID: " + student.student_id + "\n" +
+
                 "Name: " + student.name + "\n" +
+
                 "Program: " + student.program + "\n" +
+
                 "Year: " + student.year + "\n" +
+
                 "Section: " + student.section
+
             );
 
         } catch (error) {
@@ -568,66 +930,48 @@
             alert(error.message);
 
         }
+
     }
 
 
     // =================================
-    // LOAD CLASSMATE COURSES API
+    // LOAD CLASSMATE REMOTE API
+    // READ ONLY
     // =================================
 
     async function loadClassmateRecords() {
 
-        const apiURL = document.getElementById("classmateAPI")
-            .value.trim();
+        classmateRecords.innerHTML =
+            '<p class="empty">Connecting to classmate API...</p>';
 
-        const container = document.getElementById("classmateRecords");
-        const details = document.getElementById("remoteDetails");
+        remoteDetails.innerHTML = "";
 
-        if (!apiURL) {
+        remoteStudents = [];
 
-            showMessage(
-                "remoteMessage",
-                "Please enter your classmate's API URL.",
-                "error"
-            );
+        showMessage(
+            "remoteMessage",
+            "Retrieving classmate records...",
+            "success"
+        );
 
-            return;
-        }
+        const retrieveBtn =
+            document.getElementById("retrieveBtn");
+
+        retrieveBtn.disabled = true;
 
         try {
 
-            const parsedURL = new URL(apiURL);
+            // REQUEST THROUGH FLASK BACKEND
 
-            if (
-                parsedURL.protocol !== "https:" &&
-                parsedURL.protocol !== "http:"
-            ) {
-                throw new Error("Please enter a valid HTTP or HTTPS URL.");
-            }
-
-            container.innerHTML =
-                '<p class="empty">Connecting to classmate API...</p>';
-
-            details.innerHTML = "";
-
-            showMessage(
-                "remoteMessage",
-                "Retrieving classmate records...",
-                "success"
+            const response = await fetch(
+                "/api/classmate-courses"
             );
 
-            // REQUEST THROUGH FLASK BACKEND
-            const response = await fetch("/api/classmate-courses");
+            const data = await readResponse(response);
 
-            const data = await response.json();
-
-            if (!response.ok) {
-                throw new Error(
-                    data.error || "Unable to retrieve classmate API."
-                );
-            }
 
             // HANDLE DIFFERENT JSON FORMATS
+
             let records = [];
 
             if (Array.isArray(data)) {
@@ -652,59 +996,17 @@
 
             }
 
+
             remoteStudents = records;
 
             if (records.length === 0) {
 
-                container.innerHTML =
+                classmateRecords.innerHTML =
                     '<p class="empty">No classmate records found.</p>';
 
             } else {
 
-                container.innerHTML = records.map((record, index) => {
-
-                    if (
-                        typeof record !== "object" ||
-                        record === null
-                    ) {
-
-                        return `
-                            <div class="student-card">
-                                <p><b>Record ${index + 1}:</b>
-                                ${escapeHTML(record)}</p>
-                            </div>
-                        `;
-                    }
-
-                    return `
-                        <div class="student-card">
-
-                            <h3>Record ${index + 1}</h3>
-
-                            ${Object.entries(record).map(([key, value]) => `
-
-                                <p>
-                                    <b>${escapeHTML(key)}:</b>
-                                    ${escapeHTML(
-                                        typeof value === "object" && value !== null
-                                        ? JSON.stringify(value)
-                                        : value ?? "N/A"
-                                    )}
-                                </p>
-
-                            `).join("")}
-
-                            <button class="view-btn"
-                                onclick="viewRemoteStudent(${index})">
-                                View Details
-                            </button>
-
-                            <p><b>Access:</b> Read Only</p>
-
-                        </div>
-                    `;
-
-                }).join("");
+                renderClassmateRecords();
 
             }
 
@@ -716,7 +1018,7 @@
 
         } catch (error) {
 
-            container.innerHTML =
+            classmateRecords.innerHTML =
                 `<p class="error">${escapeHTML(error.message)}</p>`;
 
             showMessage(
@@ -725,7 +1027,100 @@
                 "error"
             );
 
+        } finally {
+
+            retrieveBtn.disabled = false;
+
         }
+
+    }
+
+
+    // =================================
+    // DISPLAY CLASSMATE RECORDS
+    // =================================
+
+    function renderClassmateRecords() {
+
+        if (remoteStudents.length === 0) {
+
+            classmateRecords.innerHTML =
+                '<p class="empty">No classmate records found.</p>';
+
+            return;
+
+        }
+
+        classmateRecords.innerHTML =
+            remoteStudents.map((record, index) => {
+
+                if (
+                    typeof record !== "object" ||
+                    record === null
+                ) {
+
+                    return `
+
+                        <div class="student-card">
+
+                            <h3>Record ${index + 1}</h3>
+
+                            <p>
+                                ${escapeHTML(record)}
+                            </p>
+
+                            <p><b>Access:</b> Read Only</p>
+
+                        </div>
+
+                    `;
+
+                }
+
+                const recordHTML = Object.entries(record)
+                    .map(([key, value]) => {
+
+                        const displayValue =
+                            typeof value === "object" && value !== null
+                                ? JSON.stringify(value)
+                                : value ?? "N/A";
+
+                        return `
+
+                            <p>
+                                <b>${escapeHTML(key)}:</b>
+                                ${escapeHTML(displayValue)}
+                            </p>
+
+                        `;
+
+                    }).join("");
+
+                return `
+
+                    <div class="student-card">
+
+                        <h3>Record ${index + 1}</h3>
+
+                        ${recordHTML}
+
+                        <button
+                            class="view-btn"
+                            onclick="viewRemoteStudent(${index})"
+                        >
+                            View Details
+                        </button>
+
+                        <p>
+                            <b>Access:</b> Read Only
+                        </p>
+
+                    </div>
+
+                `;
+
+            }).join("");
+
     }
 
 
@@ -738,69 +1133,82 @@
 
         const record = remoteStudents[index];
 
-        const details = document.getElementById("remoteDetails");
-
         if (!record || typeof record !== "object") {
-            details.innerHTML = "";
+
+            remoteDetails.innerHTML = "";
+
             return;
+
         }
 
-        details.innerHTML = `
+        const recordHTML = Object.entries(record)
+            .map(([key, value]) => {
+
+                const displayValue =
+                    typeof value === "object" && value !== null
+                        ? JSON.stringify(value)
+                        : value ?? "N/A";
+
+                return `
+
+                    <p>
+                        <b>${escapeHTML(key)}:</b>
+                        ${escapeHTML(displayValue)}
+                    </p>
+
+                `;
+
+            }).join("");
+
+        remoteDetails.innerHTML = `
 
             <div class="student-card">
 
                 <h3>Selected Classmate Record</h3>
 
-                ${Object.entries(record).map(([key, value]) => `
+                ${recordHTML}
 
-                    <p>
-                        <b>${escapeHTML(key)}:</b>
-                        ${escapeHTML(
-                            typeof value === "object" && value !== null
-                            ? JSON.stringify(value)
-                            : value ?? "N/A"
-                        )}
-                    </p>
-
-                `).join("")}
-
-                <p><b>Access:</b> Read Only</p>
+                <p>
+                    <b>Access:</b> Read Only
+                </p>
 
             </div>
 
         `;
-    }
 
-
-    // =================================
-    // MESSAGE FUNCTION
-    // =================================
-
-    function showMessage(elementId, message, type) {
-
-        const element = document.getElementById(elementId);
-
-        element.textContent = message;
-
-        element.className = "message " + type;
-    }
-
-
-    // =================================
-    // ESCAPE HTML
-    // =================================
-
-    function escapeHTML(value) {
-
-        return String(value).replace(/[&<>"']/g, char => ({
-            "&": "&amp;",
-            "<": "&lt;",
-            ">": "&gt;",
-            '"': "&quot;",
-            "'": "&#39;"
-        })[char]);
+        remoteDetails.scrollIntoView({
+            behavior: "smooth",
+            block: "nearest"
+        });
 
     }
+
+
+    // =================================
+    // EVENT LISTENERS
+    // =================================
+
+    searchInput.addEventListener(
+        "input",
+        renderMyRecords
+    );
+
+    cancelBtn.addEventListener(
+        "click",
+        cancelEdit
+    );
+
+    document.getElementById("refreshBtn")
+        .addEventListener(
+            "click",
+            loadMyRecords
+        );
+
+    document.getElementById("retrieveBtn")
+        .addEventListener(
+            "click",
+            loadClassmateRecords
+        );
 
 
     // =================================
