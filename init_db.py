@@ -2,14 +2,20 @@
 import sqlite3
 from pathlib import Path
 
-DATABASE = Path(__file__).resolve().parent / "students.db"
+# Get the current project directory
+BASE_DIR = Path(__file__).resolve().parent
+
+# Database file
+DATABASE = BASE_DIR / "students.db"
 
 
 def init_db():
 
-    conn = sqlite3.connect(DATABASE)
-    cursor = conn.cursor()
+    try:
+        conn = sqlite3.connect(DATABASE)
+        cursor = conn.cursor()
 
+<<<<<<< HEAD
 <<<<<<< HEAD
     # CREATE STUDENTS TABLE
     cursor.execute("""
@@ -72,11 +78,29 @@ def init_db():
             3,
             "Dijkstra"
         ))
+=======
+        # Create students table
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS students (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                student_id TEXT NOT NULL,
+                name TEXT NOT NULL,
+                program TEXT NOT NULL,
+                year INTEGER NOT NULL,
+                section TEXT NOT NULL
+            )
+        """)
+>>>>>>> ed01109 (Update Lab 8)
 
-    conn.commit()
-    conn.close()
+        conn.commit()
+        conn.close()
 
-    print("Database initialized successfully!")
+        print("Database initialized successfully!")
+        print("Database file:", DATABASE)
+        print("Students table created successfully!")
+
+    except sqlite3.Error as e:
+        print("Database error:", e)
 
 
 if __name__ == "__main__":

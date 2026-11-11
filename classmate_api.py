@@ -1,20 +1,27 @@
+
 import requests
 
-CLASSMATE_BASE_URL = "https://palencia-shamainejoyce.onrender.com"
-ENDPOINT = "/courses"
+CLASSMATE_BASE_URL = "https://francineescultura.onrender.com"
+ENDPOINT = "/api/students"
 
 url = f"{CLASSMATE_BASE_URL}{ENDPOINT}"
 
-response = requests.get(url)
+try:
+    response = requests.get(url, timeout=20)
 
-if response.status_code == 200:
-    data = response.json()
-    print("--- Classmate's API Response ---")
-    if isinstance(data, dict):
-        for key, value in data.items():
-            print(f"{key.capitalize()}: {value}")
+    if response.status_code == 200:
+
+        data = response.json()
+
+        print("--- Classmate's API Response ---")
+
+        for student in data:
+            print(student)
+
     else:
-        print("Data:", data)
-else:
-    print("Request failed.")
-    print("Status Code:", response.status_code)
+        print("Request failed.")
+        print("Status Code:", response.status_code)
+        print("Response:", response.text)
+
+except requests.exceptions.RequestException as e:
+    print("Connection error:", e)
