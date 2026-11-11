@@ -4,80 +4,117 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student CRUD Management System - Lab 8</title>
+    <title>System Integration Dashboard</title>
 
     <style>
         * {
             box-sizing: border-box;
+            font-family: Arial, sans-serif;
         }
 
         body {
-            font-family: Arial, sans-serif;
-            background: #f4eafa;
             margin: 0;
             padding: 25px;
-            color: #333;
+            background: #f3eafa;
+            color: #25213a;
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 1250px;
             margin: auto;
+        }
+
+        h1, h2 {
+            color: #70458d;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 25px;
         }
 
         .card {
             background: white;
-            padding: 25px;
+            padding: 22px;
             margin-bottom: 25px;
-            border-radius: 12px;
-            box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+            border-radius: 10px;
+            box-shadow: 0 3px 12px #00000012;
         }
 
-        h1, h2 {
-            color: #80569b;
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
         }
 
-        h1 {
-            text-align: center;
+        .stat {
+            background: white;
+            padding: 20px;
+            border-left: 5px solid #8655a0;
+            border-radius: 8px;
         }
 
-        input {
+        .stat h3 {
+            margin: 0 0 10px;
+            color: #70458d;
+        }
+
+        .stat p {
+            font-size: 28px;
+            font-weight: bold;
+            margin: 0;
+        }
+
+        form {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        input, select {
             width: 100%;
-            padding: 12px;
-            margin: 8px 0;
-            border: 1px solid #d8c2e6;
-            border-radius: 7px;
+            padding: 11px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
         }
 
         button {
-            background: #80569b;
-            color: white;
-            padding: 11px 17px;
+            padding: 10px 15px;
             border: none;
-            border-radius: 7px;
+            border-radius: 5px;
             cursor: pointer;
-            margin: 4px;
+            color: white;
+            background: #80519a;
+            margin: 3px;
         }
 
         button:hover {
-            background: #624078;
+            opacity: 0.85;
+        }
+
+        .save {
+            background: #27965b;
         }
 
         .edit {
-            background: #3979b8;
+            background: #367bc0;
         }
 
         .delete {
-            background: #d9534f;
+            background: #d94e4e;
         }
 
-        .cancel {
-            background: #777;
+        .send {
+            background: #237b9d;
         }
 
-        .form-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
+        .refresh {
+            background: #80519a;
+        }
+
+        .full {
+            grid-column: 1 / -1;
         }
 
         .table-wrapper {
@@ -87,18 +124,17 @@
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 15px;
-            min-width: 650px;
+            min-width: 750px;
         }
 
         th, td {
-            padding: 12px;
-            border: 1px solid #ddd;
+            padding: 13px;
             text-align: left;
+            border: 1px solid #ddd;
         }
 
         th {
-            background: #80569b;
+            background: #80519a;
             color: white;
         }
 
@@ -106,8 +142,13 @@
             background: #faf6fc;
         }
 
+        .source {
+            font-weight: bold;
+            color: #70458d;
+        }
+
         .message {
-            margin-top: 12px;
+            margin: 12px 0;
             font-weight: bold;
         }
 
@@ -119,13 +160,17 @@
             color: red;
         }
 
-        @media(max-width: 600px) {
-            .form-grid {
+        @media (max-width: 700px) {
+            body {
+                padding: 12px;
+            }
+
+            .stats {
                 grid-template-columns: 1fr;
             }
 
-            body {
-                padding: 10px;
+            form {
+                grid-template-columns: 1fr;
             }
         }
     </style>
@@ -135,133 +180,189 @@
 
 <div class="container">
 
-    <h1>Student CRUD Management System</h1>
+    <h1>System-to-System Integration Dashboard</h1>
+    <p class="subtitle">
+        Laboratory Activity 9 - View, Save, Send, and Retrieve Data
+    </p>
 
-    <!-- STUDENT FORM -->
+    <div class="stats">
+
+        <div class="stat">
+            <h3>My Local Records</h3>
+            <p id="localCount">0</p>
+        </div>
+
+        <div class="stat">
+            <h3>Imported Records</h3>
+            <p id="importedCount">0</p>
+        </div>
+
+        <div class="stat">
+            <h3>Partner Records</h3>
+            <p id="partnerCount">0</p>
+        </div>
+
+    </div>
+
+
+    <!-- ADD LOCAL STUDENT -->
+
     <div class="card">
 
-        <h2 id="formTitle">Add Student Record</h2>
+        <h2>Add My Student Record</h2>
 
         <form id="studentForm">
 
-            <input type="hidden" id="recordId">
+            <input id="student_id"
+                   placeholder="Student ID" required>
 
-            <div class="form-grid">
+            <input id="name"
+                   placeholder="Full Name" required>
 
-                <input type="text" id="student_id"
-                       placeholder="Student ID" required>
+            <input id="program"
+                   placeholder="Program (BSIT)" required>
 
-                <input type="text" id="name"
-                       placeholder="Full Name" required>
+            <input id="year"
+                   type="number"
+                   min="1"
+                   max="5"
+                   placeholder="Year" required>
 
-                <input type="text" id="program"
-                       placeholder="Program" required>
+            <input id="section"
+                   placeholder="Section" required>
 
-                <input type="number" id="year"
-                       placeholder="Year" min="1" required>
-
-                <input type="text" id="section"
-                       placeholder="Section" required>
-
-            </div>
-
-            <button type="submit" id="submitButton">
+            <button type="submit" class="full">
                 Add Student
             </button>
 
-            <button type="button" class="cancel"
-                    id="cancelButton"
-                    onclick="resetForm()" hidden>
-                Cancel
-            </button>
+        </form>
 
-            <div id="formMessage" class="message"></div>
+        <p id="formMessage" class="message"></p>
+
+    </div>
+
+
+    <!-- MY RECORDS -->
+
+    <div class="card">
+
+        <h2>My Records</h2>
+
+        <p>
+            These are records stored in your own database.
+        </p>
+
+        <button class="refresh" onclick="loadMyRecords()">
+            Refresh My Records
+        </button>
+
+        <div id="myMessage" class="message"></div>
+
+        <div class="table-wrapper">
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Student ID</th>
+                        <th>Name</th>
+                        <th>Program</th>
+                        <th>Year</th>
+                        <th>Section</th>
+                        <th>Source</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody id="myRecords"></tbody>
+            </table>
+
+        </div>
+
+    </div>
+
+
+    <!-- PARTNER RECORDS -->
+
+    <div class="card">
+
+        <h2>Partner Records</h2>
+
+        <p>
+            Retrieve records from your classmate's deployed API.
+        </p>
+
+        <button class="refresh" onclick="loadPartnerRecords()">
+            Retrieve Partner Records
+        </button>
+
+        <div id="partnerMessage" class="message"></div>
+
+        <div class="table-wrapper">
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Student ID</th>
+                        <th>Name</th>
+                        <th>Program</th>
+                        <th>Year</th>
+                        <th>Section</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody id="partnerRecords"></tbody>
+            </table>
+
+        </div>
+
+    </div>
+
+
+    <!-- SEND RECORD -->
+
+    <div class="card">
+
+        <h2>Send a Practice Record to Partner</h2>
+
+        <p>
+            Send one fictional practice record to your classmate's API.
+            Coordinate with your partner before sending.
+        </p>
+
+        <form id="sendForm">
+
+            <input id="send_student_id"
+                   value="EXT-001"
+                   placeholder="Student ID" required>
+
+            <input id="send_name"
+                   value="Sample Exchange Record"
+                   placeholder="Name" required>
+
+            <input id="send_program"
+                   value="BSIT"
+                   placeholder="Program" required>
+
+            <input id="send_year"
+                   type="number"
+                   value="1"
+                   min="1"
+                   max="5"
+                   placeholder="Year" required>
+
+            <input id="send_section"
+                   value="A"
+                   placeholder="Section" required>
+
+            <button type="submit" class="send full">
+                Send Record to Partner
+            </button>
 
         </form>
 
-    </div>
-
-
-    <!-- MY STUDENT RECORDS -->
-    <div class="card">
-
-        <h2>My Student Records</h2>
-
-        <input type="text" id="searchInput"
-               placeholder="Search student records...">
-
-        <button onclick="loadStudents()">Refresh Records</button>
-
-        <div id="localMessage" class="message"></div>
-
-        <div class="table-wrapper">
-
-            <table>
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Student ID</th>
-                        <th>Name</th>
-                        <th>Program</th>
-                        <th>Year</th>
-                        <th>Section</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-
-                <tbody id="studentTable">
-                    <tr>
-                        <td colspan="7">Loading records...</td>
-                    </tr>
-                </tbody>
-            </table>
-
-        </div>
-
-    </div>
-
-
-    <!-- CLASSMATE RECORDS -->
-    <div class="card">
-
-        <h2>Classmate's Records</h2>
-
-        <p>Source: Classmate's Remote API (Read Only)</p>
-
-        <input type="text" id="classmateURL"
-               value="https://francineescultura-4.onrender.com"
-               placeholder="Enter classmate's Render URL">
-
-        <button onclick="loadClassmateRecords()">
-            Retrieve Classmate Records
-        </button>
-
-        <div id="remoteMessage" class="message"></div>
-
-        <div class="table-wrapper">
-
-            <table>
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Student ID</th>
-                        <th>Name</th>
-                        <th>Program</th>
-                        <th>Year</th>
-                        <th>Section</th>
-                    </tr>
-                </thead>
-
-                <tbody id="classmateTable">
-                    <tr>
-                        <td colspan="6">
-                            Click Retrieve Classmate Records.
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-
-        </div>
+        <p id="sendMessage" class="message"></p>
 
     </div>
 
@@ -270,312 +371,505 @@
 
 <script>
 
-let students = [];
+    // =====================================
+    // MESSAGE DISPLAY
+    // =====================================
 
-// ESCAPE HTML
-function safe(value) {
-    const div = document.createElement("div");
-    div.textContent = value ?? "";
-    return div.innerHTML;
-}
+    function showMessage(elementId, message, success = true) {
 
-// MESSAGE
-function message(id, text, type) {
-    const element = document.getElementById(id);
-    element.textContent = text;
-    element.className = "message " + type;
-}
+        const element = document.getElementById(elementId);
 
-// LOAD STUDENTS
-async function loadStudents() {
+        element.textContent = message;
 
-    const table = document.getElementById("studentTable");
+        element.className = success
+            ? "message success"
+            : "message error";
+    }
 
-    table.innerHTML =
-        '<tr><td colspan="7">Loading...</td></tr>';
 
-    try {
+    // =====================================
+    // LOAD MY RECORDS
+    // =====================================
 
-     const response = await fetch("/partner-records");
+    async function loadMyRecords() {
 
-        if (!response.ok) {
-            throw new Error("HTTP " + response.status);
+        try {
+
+            const response = await fetch("/api/students");
+
+            if (!response.ok) {
+                throw new Error("Unable to load local records");
+            }
+
+            const records = await response.json();
+
+            const tbody = document.getElementById("myRecords");
+
+            tbody.innerHTML = "";
+
+            let local = 0;
+            let imported = 0;
+
+            records.forEach(student => {
+
+                const source = student.source || "Local";
+
+                if (source === "Local") {
+                    local++;
+                } else {
+                    imported++;
+                }
+
+                const row = document.createElement("tr");
+
+                const values = [
+                    student.id,
+                    student.student_id,
+                    student.name,
+                    student.program,
+                    student.year,
+                    student.section,
+                    source
+                ];
+
+                values.forEach(value => {
+
+                    const cell = document.createElement("td");
+
+                    cell.textContent = value ?? "";
+
+                    if (value === source) {
+                        cell.className = "source";
+                    }
+
+                    row.appendChild(cell);
+
+                });
+
+                const actionCell = document.createElement("td");
+
+                const editButton = document.createElement("button");
+                editButton.textContent = "Edit";
+                editButton.className = "edit";
+                editButton.onclick = () => editStudent(student);
+
+                const deleteButton = document.createElement("button");
+                deleteButton.textContent = "Delete";
+                deleteButton.className = "delete";
+                deleteButton.onclick = () => deleteStudent(student.id);
+
+                actionCell.append(editButton, deleteButton);
+
+                row.appendChild(actionCell);
+
+                tbody.appendChild(row);
+
+            });
+
+            document.getElementById("localCount").textContent = local;
+
+            document.getElementById("importedCount").textContent = imported;
+
+            showMessage(
+                "myMessage",
+                "Records loaded successfully."
+            );
+
+        } catch (error) {
+
+            showMessage("myMessage", error.message, false);
+
         }
 
-        const data = await response.json();
-
-        students = Array.isArray(data)
-            ? data
-            : data.students || data.records || [];
-
-        displayStudents(students);
-
-        message("localMessage",
-            "Records loaded successfully.", "success");
-
-    } catch (error) {
-
-        table.innerHTML =
-            '<tr><td colspan="7">Unable to load records.</td></tr>';
-
-        message("localMessage",
-            error.message, "error");
-    }
-}
-
-// DISPLAY STUDENTS
-function displayStudents(data) {
-
-    const table = document.getElementById("studentTable");
-
-    if (!data.length) {
-        table.innerHTML =
-            '<tr><td colspan="7">No student records found.</td></tr>';
-        return;
     }
 
-    table.innerHTML = data.map(student => `
-        <tr>
-            <td>${safe(student.id)}</td>
-            <td>${safe(student.student_id)}</td>
-            <td>${safe(student.name)}</td>
-            <td>${safe(student.program)}</td>
-            <td>${safe(student.year)}</td>
-            <td>${safe(student.section)}</td>
-            <td>
-                <button class="edit"
-                    onclick="editStudent(${Number(student.id)})">
-                    Edit
-                </button>
 
-                <button class="delete"
-                    onclick="deleteStudent(${Number(student.id)})">
-                    Delete
-                </button>
-            </td>
-        </tr>
-    `).join("");
-}
+    // =====================================
+    // CREATE STUDENT
+    // =====================================
 
-// ADD OR UPDATE
-document.getElementById("studentForm")
-.addEventListener("submit", async function(event) {
+    document.getElementById("studentForm")
+        .addEventListener("submit", async function(event) {
 
-    event.preventDefault();
+            event.preventDefault();
 
-    const id = document.getElementById("recordId").value;
+            const student = {
+                student_id: document.getElementById("student_id").value.trim(),
+                name: document.getElementById("name").value.trim(),
+                program: document.getElementById("program").value.trim(),
+                year: document.getElementById("year").value,
+                section: document.getElementById("section").value.trim(),
+                source: "Local"
+            };
 
-    const student = {
-        student_id: document.getElementById("student_id").value,
-        name: document.getElementById("name").value,
-        program: document.getElementById("program").value,
-        year: Number(document.getElementById("year").value),
-        section: document.getElementById("section").value
-    };
+            try {
 
-    try {
+                const response = await fetch("/api/students", {
 
-        const response = await fetch(
-            id ? `/api/students/${id}` : "/api/students",
-            {
-                method: id ? "PUT" : "POST",
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+
+                    body: JSON.stringify(student)
+
+                });
+
+                const result = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(result.error || "Unable to add student");
+                }
+
+                this.reset();
+
+                showMessage(
+                    "formMessage",
+                    "Student added successfully!"
+                );
+
+                loadMyRecords();
+
+            } catch (error) {
+
+                showMessage("formMessage", error.message, false);
+
+            }
+
+        });
+
+
+    // =====================================
+    // UPDATE STUDENT
+    // =====================================
+
+    async function editStudent(student) {
+
+        const newName = prompt("Enter updated name:", student.name);
+
+        if (newName === null) return;
+
+        if (!newName.trim()) {
+            alert("Name cannot be empty.");
+            return;
+        }
+
+        const updated = {
+
+            student_id: student.student_id,
+
+            name: newName.trim(),
+
+            program: student.program,
+
+            year: student.year,
+
+            section: student.section
+
+        };
+
+        try {
+
+            const response = await fetch(
+                `/api/students/${student.id}`,
+                {
+                    method: "PUT",
+
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+
+                    body: JSON.stringify(updated)
+                }
+            );
+
+            const result = await response.json();
+
+            if (!response.ok) {
+                throw new Error(result.error || "Update failed");
+            }
+
+            alert("Student updated successfully!");
+
+            loadMyRecords();
+
+        } catch (error) {
+
+            alert(error.message);
+
+        }
+
+    }
+
+
+    // =====================================
+    // DELETE STUDENT
+    // =====================================
+
+    async function deleteStudent(id) {
+
+        if (!confirm("Are you sure you want to delete this record?")) {
+            return;
+        }
+
+        try {
+
+            const response = await fetch(
+                `/api/students/${id}`,
+                {
+                    method: "DELETE"
+                }
+            );
+
+            const result = await response.json();
+
+            if (!response.ok) {
+                throw new Error(result.error || "Delete failed");
+            }
+
+            alert("Student deleted successfully!");
+
+            loadMyRecords();
+
+        } catch (error) {
+
+            alert(error.message);
+
+        }
+
+    }
+
+
+    // =====================================
+    // RETRIEVE PARTNER RECORDS
+    // =====================================
+
+    async function loadPartnerRecords() {
+
+        const tbody = document.getElementById("partnerRecords");
+
+        tbody.innerHTML = "";
+
+        showMessage(
+            "partnerMessage",
+            "Retrieving partner records..."
+        );
+
+        try {
+
+            const response = await fetch("/partner-records");
+
+            const records = await response.json();
+
+            if (!response.ok) {
+                throw new Error(records.error || "Partner API failed");
+            }
+
+            if (!Array.isArray(records)) {
+                throw new Error("Invalid partner record format");
+            }
+
+            document.getElementById("partnerCount").textContent =
+                records.length;
+
+            records.forEach(student => {
+
+                const row = document.createElement("tr");
+
+                const values = [
+                    student.student_id,
+                    student.name,
+                    student.program,
+                    student.year,
+                    student.section
+                ];
+
+                values.forEach(value => {
+
+                    const cell = document.createElement("td");
+
+                    cell.textContent = value ?? "";
+
+                    row.appendChild(cell);
+
+                });
+
+                const actionCell = document.createElement("td");
+
+                const viewButton = document.createElement("button");
+
+                viewButton.textContent = "View";
+
+                viewButton.onclick = () => {
+
+                    alert(
+                        "Student Information\n\n" +
+                        "Student ID: " + (student.student_id ?? "") + "\n" +
+                        "Name: " + (student.name ?? "") + "\n" +
+                        "Program: " + (student.program ?? "") + "\n" +
+                        "Year: " + (student.year ?? "") + "\n" +
+                        "Section: " + (student.section ?? "")
+                    );
+
+                };
+
+                const saveButton = document.createElement("button");
+
+                saveButton.textContent = "Save to My Database";
+
+                saveButton.className = "save";
+
+                saveButton.onclick = () => importStudent(student);
+
+                actionCell.append(viewButton, saveButton);
+
+                row.appendChild(actionCell);
+
+                tbody.appendChild(row);
+
+            });
+
+            showMessage(
+                "partnerMessage",
+                "Partner records retrieved successfully."
+            );
+
+        } catch (error) {
+
+            showMessage(
+                "partnerMessage",
+                error.message,
+                false
+            );
+
+        }
+
+    }
+
+
+    // =====================================
+    // IMPORT PARTNER RECORD
+    // =====================================
+
+    async function importStudent(student) {
+
+        if (!confirm("Save this partner record to your database?")) {
+            return;
+        }
+
+        try {
+
+            const response = await fetch("/import-student", {
+
+                method: "POST",
+
                 headers: {
                     "Content-Type": "application/json"
                 },
+
                 body: JSON.stringify(student)
+
+            });
+
+            const result = await response.json();
+
+            if (!response.ok) {
+                throw new Error(result.error || "Import failed");
             }
-        );
 
-        const result = await response.json();
+            alert(
+                "Partner record saved successfully!\nSource: Classmate API"
+            );
 
-        if (!response.ok) {
-            throw new Error(result.error || "Unable to save student.");
+            loadMyRecords();
+
+        } catch (error) {
+
+            alert(error.message);
+
         }
 
-        message("formMessage",
-            id ? "Student updated!" : "Student added!",
-            "success");
-
-        resetForm();
-        await loadStudents();
-
-    } catch (error) {
-
-        message("formMessage", error.message, "error");
-
     }
 
-});
 
-// EDIT STUDENT
-function editStudent(id) {
+    // =====================================
+    // SEND RECORD TO PARTNER
+    // =====================================
 
-    const student = students.find(
-        item => Number(item.id) === id
-    );
+    document.getElementById("sendForm")
+        .addEventListener("submit", async function(event) {
 
-    if (!student) return;
+            event.preventDefault();
 
-    document.getElementById("recordId").value = student.id;
-    document.getElementById("student_id").value = student.student_id;
-    document.getElementById("name").value = student.name;
-    document.getElementById("program").value = student.program;
-    document.getElementById("year").value = student.year;
-    document.getElementById("section").value = student.section;
+            const record = {
 
-    document.getElementById("formTitle").textContent =
-        "Edit Student Record";
+                student_id: document.getElementById("send_student_id").value.trim(),
 
-    document.getElementById("submitButton").textContent =
-        "Update Student";
+                name: document.getElementById("send_name").value.trim(),
 
-    document.getElementById("cancelButton").hidden = false;
+                program: document.getElementById("send_program").value.trim(),
 
-    window.scrollTo({ top: 0, behavior: "smooth" });
-}
+                year: document.getElementById("send_year").value,
 
-// DELETE STUDENT
-async function deleteStudent(id) {
+                section: document.getElementById("send_section").value.trim()
 
-    if (!confirm("Are you sure you want to delete this student?")) {
-        return;
-    }
+            };
 
-    try {
+            if (!confirm("Send this practice record to your assigned partner?")) {
+                return;
+            }
 
-        const response = await fetch(`/api/students/${id}`, {
-            method: "DELETE"
+            showMessage(
+                "sendMessage",
+                "Sending record to partner..."
+            );
+
+            try {
+
+                const response = await fetch("/send-to-partner", {
+
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+
+                    body: JSON.stringify(record)
+
+                });
+
+                const result = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(
+                        result.error || "Unable to send record"
+                    );
+                }
+
+                showMessage(
+                    "sendMessage",
+                    result.message
+                );
+
+            } catch (error) {
+
+                showMessage(
+                    "sendMessage",
+                    error.message,
+                    false
+                );
+
+            }
+
         });
 
-        const result = await response.json();
 
-        if (!response.ok) {
-            throw new Error(result.error || "Delete failed.");
-        }
+    // =====================================
+    // LOAD RECORDS WHEN PAGE OPENS
+    // =====================================
 
-        message("localMessage",
-            "Student deleted successfully!", "success");
-
-        await loadStudents();
-
-    } catch (error) {
-
-        message("localMessage", error.message, "error");
-
-    }
-}
-
-// RESET FORM
-function resetForm() {
-
-    document.getElementById("studentForm").reset();
-    document.getElementById("recordId").value = "";
-
-    document.getElementById("formTitle").textContent =
-        "Add Student Record";
-
-    document.getElementById("submitButton").textContent =
-        "Add Student";
-
-    document.getElementById("cancelButton").hidden = true;
-}
-
-// SEARCH
-document.getElementById("searchInput")
-.addEventListener("input", function() {
-
-    const keyword = this.value.toLowerCase();
-
-    const filtered = students.filter(student =>
-        [
-            student.id,
-            student.student_id,
-            student.name,
-            student.program,
-            student.year,
-            student.section
-        ].some(value =>
-            String(value ?? "").toLowerCase().includes(keyword)
-        )
-    );
-
-    displayStudents(filtered);
-});
-
-// CLASSMATE RECORDS
-async function loadClassmateRecords() {
-
-    const table = document.getElementById("classmateTable");
-
-    const baseURL = document.getElementById("classmateURL")
-        .value.trim().replace(/\/+$/, "");
-
-    if (!baseURL) {
-        message("remoteMessage",
-            "Please enter the Render URL.", "error");
-        return;
-    }
-
-    table.innerHTML =
-        '<tr><td colspan="6">Retrieving records...</td></tr>';
-
-    try {
-
-        // Use your own Flask server-side proxy.
-        const response = await fetch(
-            "/partner-records?url=" +
-            encodeURIComponent(baseURL + "/api/students")
-        );
-
-        if (!response.ok) {
-            throw new Error("HTTP " + response.status);
-        }
-
-        const result = await response.json();
-
-        const records = Array.isArray(result)
-            ? result
-            : result.students || result.records || [];
-
-        if (!Array.isArray(records)) {
-            throw new Error("Invalid API response.");
-        }
-
-        if (!records.length) {
-            table.innerHTML =
-                '<tr><td colspan="6">No records found.</td></tr>';
-        } else {
-
-            table.innerHTML = records.map(student => `
-                <tr>
-                    <td>${safe(student.id)}</td>
-                    <td>${safe(student.student_id)}</td>
-                    <td>${safe(student.name)}</td>
-                    <td>${safe(student.program)}</td>
-                    <td>${safe(student.year)}</td>
-                    <td>${safe(student.section)}</td>
-                </tr>
-            `).join("");
-
-        }
-
-        message("remoteMessage",
-            "Classmate records retrieved successfully!",
-            "success");
-
-    } catch (error) {
-
-        table.innerHTML =
-            '<tr><td colspan="6">Unable to load records.</td></tr>';
-
-        message("remoteMessage",
-            "Unable to retrieve classmate records: " +
-            error.message, "error");
-    }
-}
-
-// INITIAL LOAD
-document.addEventListener("DOMContentLoaded", loadStudents);
+    loadMyRecords();
 
 </script>
 

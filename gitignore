@@ -1,0 +1,19 @@
+
+# Python cache files
+__pycache__/
+*.py[cod]
+
+# Environment files
+.env
+.venv/
+venv/
+
+# Local database
+students.db
+
+# IDE settings
+.vscode/
+
+# Operating system files
+.DS_Store
+Thumbs.db
