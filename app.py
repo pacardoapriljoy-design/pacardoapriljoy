@@ -71,7 +71,7 @@ def students():
     except (ValueError, TypeError):
         return jsonify({"error": "Year must be a number"}), 400
 
-    source = data.get("source", "Local")
+    source = data.get("source", "Classmate's API)")
 
     conn = get_db_connection()
 
